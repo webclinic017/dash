@@ -1,0 +1,222 @@
+<!doctype html>
+
+<html lang="en">
+
+  <head>
+    <!-- Required meta tags -->
+      <meta http-equiv="refresh" content="10" >
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <title>ENGUNFLING</title>
+
+
+    <script src="https://kit.fontawesome.com/ef08917f02.js" crossorigin="anonymous"></script>
+
+
+  </head>
+<style>
+.hide {
+  display: none;
+}
+
+.myDIV:hover + .hide {
+  display: block;
+  color: red;
+}
+</style>
+
+  <body>
+  <h1>
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+
+            <li class="nav-item ">
+                <a class="nav-link" href="/home">RSI-STOCK <i class="bi bi-arrow-up"></i> <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/secondpage">ENGUNFLING</a>
+            </li>
+        </ul>
+      </div>
+    </nav>
+      </h1>
+  <h5>
+    <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+                <!-- Your Columns HERE -->
+                <th scope="col" class="text-light text-center font-weight-bold">I</th>
+                <th scope="col" class="text-light text-center font-weight-bold">M1</th>
+                <th scope="col" class="text-light text-center font-weight-bold">M5</th>
+                <th scope="col" class="text-light text-center font-weight-bold">M15</th>
+                <th scope="col" class="text-light text-center font-weight-bold">H1</th>
+                <th scope="col" class="text-light text-center font-weight-bold">H4</th>
+                <th scope="col" class="text-light text-center font-weight-bold">D1</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Your rows inside the table HERE: -->
+            {% for item in items2 %}
+                <tr>
+
+                    <td class="p-3 mb-2 bg-muted text-white text-center font-weight-bold"> {{item.name}} </td>
+
+                    {% if item.M1 == 'chay' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-muted text-dark" >  </td>
+                    </form>
+                        {% elif item.M1 == 'D' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-danger text-light text-center font-weight-bold " > <i class="fas fa-arrow-down"></i>  <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'M1']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-danger hide") }}</td>
+                    </form>
+                        {% elif item.M1 == 'U' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-success text-light text-center font-weight-bold " > <i class="fas fa-arrow-up"></i> <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'M1']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-success hide") }}</td>
+                    </form>
+                        {% endif %}
+
+                    {% if item.M5 == 'chay' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-muted text-dark" >  </td>
+                    </form>
+                        {% elif item.M5 == 'D' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-danger text-light text-center font-weight-bold " > <i class="fas fa-arrow-down"></i> <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'M5']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-danger hide") }}</td>
+                    </form>
+                         {% elif item.M5 == 'U' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-success text-light text-center font-weight-bold " > <i class="fas fa-arrow-up"></i> <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'M5']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-success hide") }}</td>
+                    </form>
+                        {% endif %}
+
+
+
+
+
+                    {% if item.M15 == 'chay' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-muted text-dark" > p </td>
+                    </form>
+                        {% elif item.M15 == 'D' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-danger text-light text-center font-weight-bold bi bi-arrow-up myDIV" > <i class="fas fa-arrow-down"></i> <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'M15']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-danger hide") }}</td>
+                    </form>
+                         {% elif item.M15 == 'U' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-success text-light text-center font-weight-bold " > <i class="fas fa-arrow-up"></i> <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'M15']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-success hide") }}</td>
+                    </form>
+                        {% endif %}
+
+
+                    {% if item.H1 == 'chay' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-muted text-dark" > p </td>
+                    </form>
+                        {% elif item.H1 == 'D' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-danger text-light text-center font-weight-bold " > <i class="fas fa-arrow-down"></i> <i class="bi bi-arrow-up"></i> <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'H1']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-danger hide") }}</td>
+                    </form>
+                        {% elif item.H1 == 'U' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-success text-light text-center font-weight-bold " > <i class="fas fa-arrow-up"></i> <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'H1']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-success hide") }}</td>
+                    </form>
+                        {% endif %}
+
+
+
+
+                    {% if item.H4 == 'chay' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-muted text-dark" > p </td>
+                    </form>
+                         {% elif item.H4 == 'D' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-danger text-light text-center font-weight-bold " > <i class="fas fa-arrow-down"></i>  <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'H4']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-danger hide") }}</td>
+                    </form>
+                        {% elif item.H4 == 'U' %}
+                    <div class = "myDIV">
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-success text-light text-center font-weight-bold " > <i class="fas fa-arrow-up"></i>  <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'H4']}}"><div class="hide">{{ fuck1.submit(class="btn btn-secondary float-right bg-success ") }}</div></td>
+                    </form>
+                        </div>
+                        {% endif %}
+
+
+
+
+                    {% if item.D1 == 'chay' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-muted text-dark" > p </td>
+                    </form>
+                        {% elif item.D1 == 'D' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-danger text-light text-center font-weight-bold " > <i class="fas fa-arrow-down"></i> <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'D1']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-danger hide") }}</td>
+                    </form>
+                         {% elif item.D1 == 'U' %}
+                    <form method="POST">
+                        {{fuck1.hidden_tag() }}
+                        <td  class="p-3 mb-2 bg-success text-light text-center font-weight-bold " >  <i class="fas fa-arrow-up"></i> <input id="fuck1" name="fuck1" type="hidden" value="{{[item.name,'D1']}}">{{ fuck1.submit(class="btn btn-secondary float-right bg-success hide") }}</td>
+                    </form>
+                        {% endif %}
+
+
+
+
+
+
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+      </h5>
+       <style>
+      body {
+        background-color: #212121;
+        color: white
+      }
+      .hide {
+          display: none;
+        }
+
+        .myDIV:hover + .hide {
+          display: block;
+          color: red;
+        }
+  </style>
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+    <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    -->
+  </body>

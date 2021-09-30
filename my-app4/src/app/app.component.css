@@ -1,0 +1,7 @@
+table, td, th {
+  border: 1px solid black;
+}
+      body {
+        background-color: #212121;
+        color: white
+      }
