@@ -17,6 +17,8 @@ interface OstInfo {
 }
 
 
+
+
 @Component({
   selector: 'app-cell',
   templateUrl: './cell.component.html',
@@ -47,6 +49,8 @@ export class CellComponent implements OnInit {
    }
 
   ngOnInit(): void {
+
+  console.log(this.currencyInfo$);
 
 
   }
