@@ -1,10 +1,18 @@
 
 
-t = Conditions('WTI', mt5.TIMEFRAME_H1)
+t = Conditions('USDJPY', mt5.TIMEFRAME_M15)
 
 t.Traitement()
 
-t.cons
+t.cons_D
+
+
+t = Eng('WTI', mt5.TIMEFRAME_H4)
+
+
+t.eng_con_2()
+t.cons_eng
+t.starting_index_eng
 
 
 list(t.cons['cycle'][t.starting_index::])

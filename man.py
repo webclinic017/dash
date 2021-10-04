@@ -118,7 +118,7 @@ def hello_word():
                 only_alpha += char
             b = only_alpha.split(",")
         if b not in forb:
-            forb +=[b]
+            forb += [b]
         ## printing the string which contains only alphabets
         #print(currencys.index[0])
     if len(forb) > 0:

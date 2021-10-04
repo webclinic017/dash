@@ -11,6 +11,11 @@ import numpy as np
 import os
 
 
+from man import db
+from datetime import datetime
+from man import Item
+from man import Ud
+
 class Datafeed(object):
 
     def __init__(self, currency, TF):
@@ -27,7 +32,6 @@ class Datafeed(object):
                 print("initialize() failed, error code =", mt5.last_error())
                 quit()
             rates = mt5.copy_rates_from(currency, TF, datetime(2025, 2, 6), 100)
-            print(currency)
             mt5.shutdown()
         rates_frame = pd.DataFrame(rates)
         rates_frame['time'] = pd.to_datetime(rates_frame['time'], unit='s')
@@ -423,7 +427,65 @@ class Conditions(Datafeed):
         return 'Accceleration à ' + str(self.cons.time.iloc[self.starting_index])
 
 
-class Manage(Conditions):
+class Eng(Datafeed):
+
+    def __init__(self, currency, TF):
+        Datafeed.__init__(self, currency, TF)
+
+    def eng_con_1(self, rsi , rsi_level):
+        df = self.getdf()
+        ############################
+        self.cons_eng = pd.DataFrame(df[["time" ,"close_tf"+str(self.TF), "rsi_tf"+str(self.TF) + '_'+ str(rsi), 'ema_tf'+str(self.TF)+'_20', 'ema_tf'+str(self.TF)+'_50']])
+        self.cons_eng['acc'] = ((df['rsi_tf'+str(self.TF) + '_' + str(rsi)].shift(-1) > rsi_level) & (df['close_tf'+str(self.TF) ].shift(-1) > df['ema_tf'+str(self.TF)+'_20'].shift(-1)) & (df['close_tf'+str(self.TF)].shift(-1) > df['ema_tf'+str(self.TF)+'_50'].shift(-1))& (df['close_tf'+str(self.TF)] < df['low_tf'+str(self.TF)].shift(-1)) & (df['rsi_tf'+str(self.TF) + '_'+ str(rsi)] < 75))
+        self.starting_index_eng = self.cons_eng['acc'][::-1].idxmax()
+
+        if self.cons_eng['acc'].any():
+            self.starting_index_eng = self.cons_eng['acc'][::-1].idxmax()
+        else:
+            self.starting_index_eng = None
+
+        self.eng_l3 = False
+        if self.starting_index_eng is not None and self.starting_index_eng > len(df) - 8 :
+            self.eng_l3 = True
+            for i in range(self.starting_index_eng, len(df)):
+                 if df['low_tf'+str(self.TF)][i] <= df['ema_tf'+str(self.TF)+'_20'][i] or df['close_tf'+str(self.TF)][i] > df['high_tf'+str(self.TF)][self.starting_index_eng] :
+                     self.eng_l3 = False
+                     break
+        ###############################
+        self.cons_eng_D = pd.DataFrame(df[["time" ,"close_tf"+str(self.TF), "rsi_tf"+str(self.TF) + '_'+ str(rsi), 'ema_tf'+str(self.TF)+'_20', 'ema_tf'+str(self.TF)+'_50']])
+        self.cons_eng_D['acc'] = ((df['rsi_tf'+str(self.TF) + '_' + str(rsi)].shift(-1) < 100 -rsi_level) & (df['close_tf'+str(self.TF) ].shift(-1) < df['ema_tf'+str(self.TF)+'_20'].shift(-1)) & (df['close_tf'+str(self.TF)].shift(-1) < df['ema_tf'+str(self.TF)+'_50'].shift(-1))& (df['close_tf'+str(self.TF)] > df['high_tf'+str(self.TF)].shift(-1)) & (df['rsi_tf'+str(self.TF) + '_'+ str(rsi)] > 25))
+        self.starting_index_eng_D = self.cons_eng_D['acc'][::-1].idxmax()
+        self.eng_D3 = False
+        if self.cons_eng_D['acc'].any():
+            self.starting_index_eng_D = self.cons_eng_D['acc'][::-1].idxmax()
+        else:
+            self.starting_index_eng_D = None
+        if self.starting_index_eng_D is not None and self.starting_index_eng_D > len(df) - 8 :
+            self.eng_D3 = True
+            for i in range(self.starting_index_eng_D, len(df)):
+                 if df['close_tf'+str(self.TF)][i] < df['low_tf'+str(self.TF)][self.starting_index_eng_D] or df['high_tf'+str(self.TF)][i] >= df['ema_tf'+str(self.TF)+'_20'][i]:
+                     self.eng_D3 = False
+                     break
+        ###############################
+        if self.eng_l3 :
+            flesh3 = 'D'
+        elif self.eng_D3:
+            flesh3 = 'U'
+        else:
+            flesh3 = 'chay'
+
+        return flesh3
+
+    def eng_con_2(self):
+        flesh1 = self.eng_con_1(3, 87)
+        flesh2 = self.eng_con_1(14, 75)
+        self.flesh = 'chay'
+        if flesh1 != 'chay' and flesh1 == flesh2:
+            self.flesh = flesh1
+        return self.flesh
+
+
+class Manage(Conditions,Eng):
 
     def __init__(self):
         self.currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'WTI', '#USSPX500', '#USNDAQ100', '#US30',
@@ -489,27 +551,108 @@ class Manage(Conditions):
         signal = test1.Traitement()
         return signal
 
-    def update(self, df_final):
+    ##################### ENG ######################
+
+    def addition_eng(self, curr):
+        all_results_eng = []
+        for TFi in self.TFs:
+            test1_eng = Eng(curr, TFi)
+            signal_eng = test1_eng.eng_con_2()
+            all_results_eng.append(signal_eng)
+        return all_results_eng
+
+    def toshow_eng(self):
+        result_eng = np.array(list(map(self.addition_eng, self.currencys)))
+        data_eng = {'I': self.currencys, 'M1': result_eng[:, 0], 'M5': result_eng[:, 1], 'M15': result_eng[:, 2], 'H1': result_eng[:, 3],
+                'H4': result_eng[:, 4], 'D1': result_eng[:, 5]}
+        df_final_eng = pd.DataFrame(data_eng)
+        return df_final_eng
+
+    @staticmethod
+    def update_map_M1_eng(curr):
+        TFi = mt5.TIMEFRAME_M1
+        test1_eng = Eng(curr, TFi)
+        signal_eng = test1_eng.eng_con_2()
+        return signal_eng
+    @staticmethod
+    def update_map_M5_eng(curr):
+        TFi = mt5.TIMEFRAME_M5
+        test1_eng = Eng(curr, TFi)
+        signal_eng = test1_eng.eng_con_2()
+        return signal_eng
+    @staticmethod
+    def update_map_M15_eng(curr):
+        TFi = mt5.TIMEFRAME_M15
+        test1_eng = Eng(curr, TFi)
+        signal_eng = test1_eng.eng_con_2()
+        return signal_eng
+    @staticmethod
+    def update_map_H1_eng(curr):
+        TFi = mt5.TIMEFRAME_H1
+        test1_eng = Eng(curr, TFi)
+        signal_eng = test1_eng.eng_con_2()
+        return signal_eng
+    @staticmethod
+    def update_map_H4_eng(curr):
+        TFi = mt5.TIMEFRAME_H1
+        test1_eng = Eng(curr, TFi)
+        signal_eng = test1_eng.eng_con_2()
+        return signal_eng
+    @staticmethod
+    def update_map_D1_eng(curr):
+        TFi = mt5.TIMEFRAME_H1
+        test1_eng = Eng(curr, TFi)
+        signal_eng = test1_eng.eng_con_2()
+        return signal_eng
+
+    ########################## DB #############################
+
+    def to_db(self, df_final , df_final_eng):
+        currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'WTI', '#USSPX500', '#USNDAQ100', '#US30',
+                     '#Euro50',
+                     'EURGBP']
+        db.drop_all()
+        db.create_all()
+        for i in range(len(df_final)):
+            item = Item(name=currencys[i], M1=df_final['M1'][i], M5=df_final['M5'][i], M15=df_final['M15'][i],
+                        H1=df_final['H1'][i], H4=df_final['H4'][i], D1=df_final['D1'][i])
+            db.session.add(item)
+            db.session.commit()
+        for i in range(len(df_final_eng)):
+            ud = Ud(name=currencys[i], M1=df_final_eng['M1'][i], M5=df_final_eng['M5'][i], M15=df_final_eng['M15'][i],
+                        H1=df_final_eng['H1'][i], H4=df_final_eng['H4'][i], D1=df_final_eng['D1'][i])
+            db.session.add(ud)
+            db.session.commit()
+
+    ######################## Update ################################
+
+    def update(self, df_final, df_final_eng):
         dt = datetime.now()
         updated = []
         if dt.second == 1:
             df_final['M1'] = list(map(self.update_map_M1, self.currencys))
+            df_final_eng['M1'] = list(map(self.update_map_M1_eng, self.currencys))
             updated.append('M1 Updated')
             if dt.minute in [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]:
                 df_final['M5'] = list(map(self.update_map_M5, self.currencys))
+                df_final_eng['M5'] = list(map(self.update_map_M5_eng, self.currencys))
                 updated.append('M5 Updated')
                 if dt.minute in [0, 15, 30, 45, ]:
                     df_final['M15'] = list(map(self.update_map_M15, self.currencys))
+                    df_final_eng['M15'] = list(map(self.update_map_M15_eng, self.currencys))
                     updated.append('M15 Updated')
                     if dt.minute == 0:
                         df_final['H1'] = list(map(self.update_map_H1, self.currencys))
+                        df_final_eng['H1'] = list(map(self.update_map_H1_eng, self.currencys))
                         updated.append('H1 Updated')
                         if dt.hour in [0, 4, 8, 12, 16, 20]:
                             df_final['H4'] = list(map(self.update_map_H4, self.currencys))
+                            df_final_eng['H4'] = list(map(self.update_map_H4_eng, self.currencys))
                             updated.append('H4 Updated')
+            self.to_db(df_final,df_final_eng)
             print(updated)
             print(df_final)
-        return df_final
+            print(df_final_eng)
 
 
 class Zone(Datafeed):
@@ -743,26 +886,31 @@ class Zone(Datafeed):
                 last_touche = 'Er'
         return last_touche
 
-'''
-from man import db
-from datetime import datetime
-from man import Item
-'''
-currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'WTI', '#USSPX500', '#USNDAQ100', '#US30',
-             '#Euro50',
-             'EURGBP']
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 t = Manage()
 d = t.toshow()
-'''
-db.drop_all()
-db.create_all()
-for i in range(len(d)):
-    item = Item(name=currencys[i], M1=d['M1'][i], M5=d['M5'][i], M15=d['M15'][i],
-                H1=d['H1'][i], H4=d['H4'][i], D1=d['D1'][i])
-    db.session.add(item)
-    db.session.commit()
-'''
+
+d_eng = t.toshow_eng()
+
+t.to_db(d,d_eng)
+
 print(d)
+print(d_eng)
 while True:
-    t.update(d)
+    t.update(d,d_eng)
+
+
+
