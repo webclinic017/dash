@@ -10,18 +10,20 @@ import { HeroesComponent } from './heroes/heroes.component';
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './in-memory-data.service';
 import { CellComponent } from './cell/cell.component';
+import { EngComponent } from './eng/eng.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HeroesComponent,
-    CellComponent
+    CellComponent,
+    EngComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-  HttpClientModule,
+    HttpClientModule,
 
 
 // The HttpClientInMemoryWebApiModule module intercepts HTTP requests

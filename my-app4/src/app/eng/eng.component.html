@@ -1,0 +1,101 @@
+
+
+<div *ngIf="currencyInfo_eng$ | async as currencyInfo_eng">
+
+    <table class=" table table-hover table-dark  " >
+        <thead>
+            <tr>
+                <!-- Your Columns HERE -->
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h3">I </th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h3">M1</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h3">M5</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h3">M15</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h3">H1</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h3">H4</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h3">D1</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let e of currencyInfo_eng" >
+                <th class="text-light text-center font-weight-bold p-3 h-10 h3">{{ e.name }}</th>
+                <td>
+                  <div [ngSwitch]= "e.M1">
+                    <div *ngSwitchCase="'U'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> </div></div>
+                    <div *ngSwitchCase="'D'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button></div></div>
+                    <div *ngSwitchDefault></div>
+                  </div>
+                </td>
+                <td>
+                  <div [ngSwitch]= "e.M5">
+                    <div *ngSwitchCase="'U'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M5')">X</button></div> </div>
+                    <div *ngSwitchCase="'D'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M5')">X</button> </div></div>
+                    <div *ngSwitchDefault></div>
+                  </div>
+                </td>
+                <td>
+                  <div [ngSwitch]= "e.M15">
+                    <div *ngSwitchCase="'U'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M15')">X</button></div></div>
+                    <div *ngSwitchCase="'D'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M15')">X</button> </div></div>
+
+                    <div *ngSwitchDefault></div>
+                  </div>
+                </td>
+                <td>
+                  <div [ngSwitch]= "e.H1">
+                    <div *ngSwitchCase="'U'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H1')">X</button></div></div>
+                    <div *ngSwitchCase="'D'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H1')">X</button></div></div>
+                    <div *ngSwitchDefault></div>
+                  </div>
+                </td>
+                <td>
+                  <div [ngSwitch]= "e.H4">
+                    <div *ngSwitchCase="'U'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H4')">X</button> </div></div>
+                    <div *ngSwitchCase="'D'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H4')">X</button></div></div>
+                    <div *ngSwitchDefault></div>
+                  </div>
+                </td>
+                <td>
+                  <div [ngSwitch]= "e.D1">
+                    <div *ngSwitchCase="'U'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'D1')">X</button> </div></div>
+                    <div *ngSwitchCase="'D'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'D1')">X</button> </div></div>
+                    <div *ngSwitchDefault></div>
+                  </div>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<style>
+td , tr , th{
+  width: 300px;
+  height: 70px;
+  padding: 50px;
+  position: relative;
+}
+
+span.b {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  padding: 5px;
+  border: 1px solid blue;
+  background-color: yellow;
+}
+
+span.c {
+  display: block;
+  width: 100px;
+  height: 100px;
+  padding: 5px;
+  border: 1px solid blue;
+  background-color: yellow;
+}
+</style>
+
+

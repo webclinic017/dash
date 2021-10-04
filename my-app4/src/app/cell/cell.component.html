@@ -1,32 +1,4 @@
 
-  <h1>
-      <nav class="navbar navbar-expand-md navbar-dark bg-dark justify-content-around">
-
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mr-auto">
-
-            <li class="nav-item active">
-
-                <a class="nav-link" href="/home">RSI-STOCK <span class="sr-only">(current)</span></a>
-
-            </li>
-
-            <li class="nav-item my-2 my-lg-0">
-
-                <a class="nav-link " href="/secondpage">ENGUNFLING </a>
-
-            </li>
-
-        </ul>
-      </div>
-    </nav>
-
-  </h1>
-
-
 
 <div *ngIf="currencyInfo$ | async as currencyInfo">
 
@@ -34,88 +6,88 @@
         <thead>
             <tr>
                 <!-- Your Columns HERE -->
-                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 ">I </th>
-                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 ">M1</th>
-                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 ">M5</th>
-                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 ">M15</th>
-                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 ">H1</th>
-                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 ">H4</th>
-                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 ">D1</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h4 ">I </th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h4 ">M1</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h4">M5</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h4">M15</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h4">H1</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h4">H4</th>
+                <th scope="col" class="text-light text-center font-weight-bold p-3 h-10 h4">D1</th>
             </tr>
         </thead>
 
         <tbody>
             <tr *ngFor="let e of currencyInfo" >
-                <th>{{ e.name }}</th>
+                <th class="text-light text-center font-weight-bold p-3 h-10 h4 ">{{ e.name }}</th>
                 <td>
                   <div [ngSwitch]= "e.M1">
-                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success  "></div></div>
-                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger  "></div></div>
-                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M1')">X</button>X <i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M1')">X</button> <i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning  "></div></div>
-                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M1')">X</button> <i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M1')">X</button> <i class="fas fa-check-circle"></i> </div> </div>
+                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> </div></div>
+                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button></div></div>
+                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> <i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> <i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning text-warning text-center font-weight-bold h3 "> r  <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button></div></div>
+                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> <i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> <i class="fas fa-check-circle"></i> </div> </div>
                     <div *ngSwitchDefault></div>
                   </div>
                 </td>
                 <td>
                   <div [ngSwitch]= "e.M5">
-                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success  "></div></div>
-                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger  "></div></div>
-                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M5')">X</button> <i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M5')">X</button> <i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning  "></div></div>
-                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M5')">X</button> <i class="fas fa-check-circle"></i> </div> </div>
-                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M5')">X</button> <i class="fas fa-check-circle"></i> </div> </div>
+                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M5')">X</button></div> </div>
+                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M5')">X</button> </div></div>
+                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M5')">X</button> <i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M5')">X</button> <i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning text-warning text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> </div></div>
+                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M5')">X</button> <i class="fas fa-check-circle"></i> </div> </div>
+                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M5')">X</button> <i class="fas fa-check-circle"></i> </div> </div>
                     <div *ngSwitchDefault></div>
                   </div>
                 </td>
                 <td>
                   <div [ngSwitch]= "e.M15">
-                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success  "></div></div>
-                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger  "></div></div>
-                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M15')">X</button><i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M15')">X</button> </div>  </div>
-                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning  "></div></div>
-                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M15')">X</button> <i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'M15')">X</button> <i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M15')">X</button></div></div>
+                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M15')">X</button> </div></div>
+                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M15')">X</button><i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M15')">X</button> </div>  </div>
+                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning text-warning text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> </div></div>
+                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M15')">X</button> <i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M15')">X</button> <i class="fas fa-check-circle"></i> </div></div>
                     <div *ngSwitchDefault></div>
                   </div>
                 </td>
                 <td>
                   <div [ngSwitch]= "e.H1">
-                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success  "></div></div>
-                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger  "></div></div>
-                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold ">O <button (click)="addPersone(e.name,'H1')">X</button><i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold ">O <button (click)="addPersone(e.name,'H1')">X</button><i class="fas fa-check-circle"></i> </div> </div>
-                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning  "></div></div>
-                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'H1')">X</button><i class="fas fa-check-circle"></i></div> </div>
-                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold ">O <button (click)="addPersone(e.name,'H1')">X</button><i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3  "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H1')">X</button></div></div>
+                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H1')">X</button></div></div>
+                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold h3 ">O <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H1')">X</button><i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold h3 ">O <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight"(click)="addPersone(e.name,'H1')">X</button><i class="fas fa-check-circle"></i> </div> </div>
+                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning text-warning text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> </div></div>
+                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H1')">X</button><i class="fas fa-check-circle"></i></div> </div>
+                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3 ">O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H1')">X</button><i class="fas fa-check-circle"></i> </div></div>
                     <div *ngSwitchDefault></div>
                   </div>
                 </td>
                 <td>
                   <div [ngSwitch]= "e.H4">
-                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success  "></div></div>
-                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger  "></div></div>
-                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'H4')">X</button><i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'H4')">X</button><i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning  "></div></div>
-                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'H4')">X</button><i class="fas fa-check-circle"></i></div> </div>
-                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'H4')">X</button> <i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H4')">X</button> </div></div>
+                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H4')">X</button></div></div>
+                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H4')">X</button><i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H4')">X</button><i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning text-warning text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> </div></div>
+                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H4')">X</button><i class="fas fa-check-circle"></i></div> </div>
+                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3 "> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'H4')">X</button> <i class="fas fa-check-circle"></i> </div></div>
                     <div *ngSwitchDefault></div>
                   </div>
                 </td>
                 <td>
                   <div [ngSwitch]= "e.D1">
-                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success  "> </div></div>
-                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger  "></div></div>
-                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'D1')">X</button><i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'D1')">X</button><i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning  "></div></div>
-                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'D1')">X</button><i class="fas fa-check-circle"></i> </div></div>
-                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold "> O <button (click)="addPersone(e.name,'D1')">X</button><i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'v'"><div class="p-3 mb-2 bg-success text-success text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'D1')">X</button> </div></div>
+                    <div *ngSwitchCase="'r'"><div class="p-3 mb-2 bg-danger text-danger text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'D1')">X</button> </div></div>
+                    <div *ngSwitchCase="'O'"><div class="p-3 mb-2 bg-success text-light text-center font-weight-bold h3"> O <button class="btn btn-secondary float-right bg-success text-success   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'D1')">X</button><i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'Or'"><div class="p-3 mb-2 bg-danger text-light text-center font-weight-bold h3"> O <button class="btn btn-secondary float-right bg-danger text-danger   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'D1')">X</button><i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'j'"><div class="p-3 mb-2 bg-warning text-warning text-center font-weight-bold h3 "> r <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'M1')">X</button> </div></div>
+                    <div *ngSwitchCase="'Oj'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3"> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'D1')">X</button><i class="fas fa-check-circle"></i> </div></div>
+                    <div *ngSwitchCase="'Ojr'"><div class="p-3 mb-2 bg-warning text-light text-center font-weight-bold h3"> O <button class="btn btn-secondary float-right bg-warning text-warning   d-flex p-2 bd-highlight" (click)="addPersone(e.name,'D1')">X</button><i class="fas fa-check-circle"></i> </div></div>
                     <div *ngSwitchDefault></div>
                   </div>
                 </td>
@@ -128,5 +100,30 @@
 </div>
 
 
+<style>
+td , tr , th{
+  width: 300px;
+  height: 50px;
+  padding: 50px;
+  position: relative;
+}
 
+span.b {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  padding: 5px;
+  border: 1px solid blue;
+  background-color: yellow;
+}
+
+span.c {
+  display: block;
+  width: 100px;
+  height: 100px;
+  padding: 5px;
+  border: 1px solid blue;
+  background-color: yellow;
+}
+</style>
 

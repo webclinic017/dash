@@ -7,7 +7,7 @@ import { Observable, timer, Subscription, Subject } from 'rxjs';
 
 import { switchMap, tap, share, retry, takeUntil } from 'rxjs/operators';
 
-import { HeroService , CurrencyInfo} from '../heroes/hero.service';
+import { EngService , CurrencyInfo_eng} from './eng.service';
 
 type ost = OstInfo[];
 
@@ -18,21 +18,22 @@ interface OstInfo {
 
 
 @Component({
-  selector: 'app-cell',
-  templateUrl: './cell.component.html',
-  styleUrls: ['./cell.component.css']
+  selector: 'app-eng',
+  templateUrl: './eng.component.html',
+  styleUrls: ['./eng.component.css']
 })
 
-export class CellComponent implements OnInit {
+export class EngComponent implements OnInit {
+
+
+
+  currencyInfo_eng$: Observable<CurrencyInfo_eng[]>;
 
   postId : any;
 
-  currencyInfo$: Observable<CurrencyInfo[]>;
+     addPersone(e : string, a : string){
 
-
-    addPersone(e : string, a : string){
-
-    this.http.post<any>('http://127.0.0.1:8050/' , {"curr" : e , "tf" : a }  ).subscribe(data => {
+    this.http.post<any>('http://127.0.0.1:8050/eng' , {"curr" : e , "tf" : a }  ).subscribe(data => {
         this.postId = data.aa;
     })
 
@@ -40,9 +41,9 @@ export class CellComponent implements OnInit {
 
     }
 
-  constructor( private service : HeroService , private http: HttpClient  ) {
+  constructor( private service : EngService , private http: HttpClient  ) {
 
-    this.currencyInfo$ = service.getAllCurrencies();
+    this.currencyInfo_eng$ = service.getAllCurrencies_eng();
 
    }
 
@@ -53,3 +54,4 @@ export class CellComponent implements OnInit {
 
 
 }
+
