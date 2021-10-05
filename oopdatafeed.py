@@ -18,17 +18,22 @@ from man import Ud
 
 class Datafeed(object):
 
+    mt = r"C:\Program Files\XM MT5\terminal64.exe"
+    currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'OIL-NOV21',  'US500Cash', 'US100Cash', 'US30Cash',
+             'EU50Cash', 'GER40Cash']
+
     def __init__(self, currency, TF):
         self.currency = currency
         self.TF = TF
 
     def getdata(self, currency, TF):
         rates = None
-        mt5.initialize(r"C:\Program Files\MetaTrader 5 Terminal\terminal64.exe")
+        mt5.initialize(self.mt)
         while rates is None:
             pd.set_option('display.max_columns', 500)
             pd.set_option('display.width', 1500)
-            if not mt5.initialize(r"C:\Program Files\MetaTrader 5 Terminal\terminal64.exe"):
+            print(currency)
+            if not mt5.initialize(self.mt):
                 print("initialize() failed, error code =", mt5.last_error())
                 quit()
             rates = mt5.copy_rates_from(currency, TF, datetime(2025, 2, 6), 100)
@@ -79,6 +84,8 @@ class Datafeed(object):
         self.computeRSI(rates_frame, 14)
         self.compute_stock(rates_frame)
         self.computeTenken(rates_frame)
+        period = 12
+        self.computeEMA(rates_frame, period)
         period = 18
         self.computeEMA(rates_frame, period)
         period = 20
@@ -348,7 +355,8 @@ class Conditions(Datafeed):
         if self.starting_index is not None:
             self.cons['cycle'].iloc[self.starting_index] = 'v'
             for i in range(self.starting_index, len(self.cons)):
-                if self.cons['cycle'].iloc[i - 1] == 'v' and self.df['stock_tf' + str(self.TF)].iloc[i] > 25:
+                if self.cons['cycle'].iloc[i - 1] == 'v' and self.df['stock_tf' + str(self.TF)].iloc[i] > 25 and self.cons['init'].iloc[
+                    i] == False and self.df['close_tf' + str(self.TF)].iloc[i] > self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'v'
                 elif self.cons['j'].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'j'
@@ -358,16 +366,19 @@ class Conditions(Datafeed):
                     self.cons['cycle'].iloc[i] = 'O'
                 elif self.cons['cycle'].iloc[i - 1] == 'O' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75 and \
                         self.df['close_tf' + str(self.TF)].iloc[i] > \
-                        self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i] and self.cons['init'].iloc[i] == False:
+                        self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i] :
                     self.cons['cycle'].iloc[i] = 'O'
                 elif self.cons['Oj'].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'Oj'
+
         #############################################
+
         self.cons_D['cycle'] = 'chay'
         if self.starting_index_D is not None:
             self.cons_D['cycle'].iloc[self.starting_index_D] = 'r'
             for i in range(self.starting_index_D, len(self.cons_D)):
-                if self.cons_D['cycle'].iloc[i - 1] == 'r' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75:
+                if self.cons_D['cycle'].iloc[i - 1] == 'r' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75 and self.cons_D['init'].iloc[
+                    i] == False and self.df['close_tf' + str(self.TF)].iloc[i] < self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons_D['cycle'].iloc[i] = 'r'
                 elif self.cons_D['j'].iloc[i] :
                     self.cons_D['cycle'].iloc[i] = 'j'
@@ -377,8 +388,7 @@ class Conditions(Datafeed):
                     self.cons_D['cycle'].iloc[i] = 'Or'
                 elif self.cons_D['cycle'].iloc[i - 1] == 'Or' and (self.df['stock_tf' + str(self.TF)].iloc[i] > 25) and \
                         self.df['close_tf' + str(self.TF)].iloc[i] < \
-                        self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i] and self.cons_D['init'].iloc[
-                    i] == False:
+                        self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i] :
                     self.cons_D['cycle'].iloc[i] = 'Or'
                 elif self.cons_D['Ojr'].iloc[i] :
                     self.cons_D['cycle'].iloc[i] = 'Ojr'
@@ -488,8 +498,7 @@ class Eng(Datafeed):
 class Manage(Conditions,Eng):
 
     def __init__(self):
-        self.currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'WTI', '#USSPX500', '#USNDAQ100', '#US30',
-                          '#Euro50', 'EURGBP']
+
         self.TFs = [mt5.TIMEFRAME_M1, mt5.TIMEFRAME_M5,
                     mt5.TIMEFRAME_M15, mt5.TIMEFRAME_H1,
                     mt5.TIMEFRAME_H4, mt5.TIMEFRAME_D1]
@@ -608,18 +617,16 @@ class Manage(Conditions,Eng):
     ########################## DB #############################
 
     def to_db(self, df_final , df_final_eng):
-        currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'WTI', '#USSPX500', '#USNDAQ100', '#US30',
-                     '#Euro50',
-                     'EURGBP']
+
         db.drop_all()
         db.create_all()
         for i in range(len(df_final)):
-            item = Item(name=currencys[i], M1=df_final['M1'][i], M5=df_final['M5'][i], M15=df_final['M15'][i],
+            item = Item(name=self.currencys[i], M1=df_final['M1'][i], M5=df_final['M5'][i], M15=df_final['M15'][i],
                         H1=df_final['H1'][i], H4=df_final['H4'][i], D1=df_final['D1'][i])
             db.session.add(item)
             db.session.commit()
         for i in range(len(df_final_eng)):
-            ud = Ud(name=currencys[i], M1=df_final_eng['M1'][i], M5=df_final_eng['M5'][i], M15=df_final_eng['M15'][i],
+            ud = Ud(name=self.currencys[i], M1=df_final_eng['M1'][i], M5=df_final_eng['M5'][i], M15=df_final_eng['M15'][i],
                         H1=df_final_eng['H1'][i], H4=df_final_eng['H4'][i], D1=df_final_eng['D1'][i])
             db.session.add(ud)
             db.session.commit()
@@ -655,6 +662,7 @@ class Manage(Conditions,Eng):
             print(df_final_eng)
 
 
+'''
 class Zone(Datafeed):
 
     def __init__(self, currency, TF):
@@ -885,16 +893,7 @@ class Zone(Datafeed):
                     real_Ex1[2] and real_Ex1[2] > real_Ex1[3] and real_Ex1[3] > real_Ex1[4]:
                 last_touche = 'Er'
         return last_touche
-
-
-
-
-
-
-
-
-
-
+'''
 
 
 
