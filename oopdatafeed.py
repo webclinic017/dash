@@ -23,6 +23,8 @@ class Datafeed(object):
     currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'OIL-NOV21',  'US500Cash', 'US100Cash', 'US30Cash',
              'EU50Cash', 'GER40Cash']
 
+    tfs = [mt5.TIMEFRAME_M2, mt5.TIMEFRAME_M5, mt5.TIMEFRAME_M15, mt5.TIMEFRAME_H1, mt5.TIMEFRAME_H4,
+                mt5.TIMEFRAME_D1, mt5.TIMEFRAME_W1]
     def __init__(self, currency, TF):
         self.currency = currency
         self.TF = TF
@@ -96,8 +98,7 @@ class Datafeed(object):
         return rates_frame
 
     def all_data(self):
-        tfs = [mt5.TIMEFRAME_M1, mt5.TIMEFRAME_M5, mt5.TIMEFRAME_M15, mt5.TIMEFRAME_H1, mt5.TIMEFRAME_H4,
-               mt5.TIMEFRAME_D1, mt5.TIMEFRAME_W1]
+
         df = self.cal_data(self.currency, self.TF)
         df = df.rename(
             columns={"close": "close_tf" + str(self.TF), "open": "open_tf" + str(self.TF),
@@ -105,8 +106,8 @@ class Datafeed(object):
         df = df.drop(
             ['tick_volume', 'spread', 'real_volume', '14-high', '14-low', '%K', '%D'], axis=1)
         tf_base = self.TF
-        for tf in tfs:
-            if tfs.index(tf) > tfs.index(self.TF):
+        for tf in self.tfs:
+            if self.tfs.index(tf) > self.tfs.index(self.TF):
                 self.TF = tf
                 df1 = self.cal_data(self.currency, self.TF)
                 df1 = df1.drop(
@@ -129,8 +130,6 @@ class Datafeed(object):
 
 
 class Conditions(Datafeed):
-    tfs = [mt5.TIMEFRAME_M1, mt5.TIMEFRAME_M5, mt5.TIMEFRAME_M15, mt5.TIMEFRAME_H1, mt5.TIMEFRAME_H4, mt5.TIMEFRAME_D1,
-           mt5.TIMEFRAME_W1]
 
     def __init__(self, currency, TF):
         Datafeed.__init__(self, currency, TF)
@@ -153,13 +152,19 @@ class Conditions(Datafeed):
                     'ema_tf' + str(tf) + '_' + str(20)]
                 self.ema_cons['con_ema50_' + str(tf)] = self.df['close_tf' + str(tf)] > self.df[
                     'ema_tf' + str(tf) + '_' + str(50)]
-        if self.TF == mt5.TIMEFRAME_M1:
-            self.cons['all_trend_tfs'] = ((self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M1)] ) & (
-                    self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M5)] ) & (
-                                                  self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M15)] ) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M1)] ) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M5)] ) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M15)] ))
+
+        if self.TF == mt5.TIMEFRAME_M2:
+            self.cons['all_trend_tfs'] = (
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M2)] ) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M5)] ) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M15)] ) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M2)] ) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M5)] ) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M15)] ) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H1)])
+                                            )
+
         elif self.TF == mt5.TIMEFRAME_M5:
             self.cons['all_trend_tfs'] = (((self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M5)] ) & (
                     self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M5)] )) & (
