@@ -19,7 +19,7 @@ from man import Ud
 
 class Datafeed(object):
 
-    mt = r"C:\Program Files\XM MT5\terminal64.exe"
+    mt = r"C:\Program Files\XM Global MT5\terminal64.exe"
     currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'OIL-NOV21',  'US500Cash', 'US100Cash', 'US30Cash',
              'EU50Cash', 'GER40Cash']
 
