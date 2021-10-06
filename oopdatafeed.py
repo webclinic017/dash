@@ -1,3 +1,4 @@
+
 import time
 import pandas as pd
 from datetime import datetime
@@ -336,19 +337,26 @@ class Conditions(Datafeed):
 
     def ini(self):
         self.cons['init'] = False
-        myseries = self.cons[self.starting_index::]
-        if self.starting_index is not None and myseries['O'].any():
-            self.signal_index = myseries.index[myseries['O'] ].tolist()[0]
-            self.cons['init'] = self.df['stock_tf' + str(self.TF)] - self.df['stock_tf' + str(self.TF)][
-                self.signal_index - 1] > 20
+
+        if self.starting_index is not None :
+            self.ini = self.df['stock_tf' + str(self.TF)][self.starting_index]
+            i = self.starting_index
+            while i < len(self.df):
+                if self.ini > self.df['stock_tf' + str(self.TF)][i]:
+                    self.ini = self.df['stock_tf' + str(self.TF)][i]
+                self.cons['init'][i] = self.df['stock_tf' + str(self.TF)][i] - self.ini > 20
+                i += 1
 
         self.cons_D['init'] = False
-        myseries = self.cons_D[self.starting_index_D::]
-        if self.starting_index_D is not None and myseries['Or'].any():
-            self.signal_index_D = myseries.index[myseries['Or'] ].tolist()[0]
-            self.signal_index_D = myseries.index[myseries['Or'] ].tolist()[0]
-            self.cons_D['init'] = self.df['stock_tf' + str(self.TF)][self.signal_index_D - 1] - self.df[
-                'stock_tf' + str(self.TF)] > 20
+        if self.starting_index_D is not None :
+            self.inir = self.df['stock_tf' + str(self.TF)][self.starting_index_D]
+            i = self.starting_index_D
+            while i < len(self.df):
+                if self.inir < self.df['stock_tf' + str(self.TF)][i]:
+                    self.inir = self.df['stock_tf' + str(self.TF)][i]
+                self.cons_D['init'][i] = self.inir - self.df['stock_tf' + str(self.TF)][i] > 20
+
+                i += 1
 
     def all_cycle(self):
         self.cons['cycle'] = 'chay'
@@ -360,9 +368,10 @@ class Conditions(Datafeed):
                     self.cons['cycle'].iloc[i] = 'v'
                 elif self.cons['j'].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'j'
-                elif self.cons['cycle'].iloc[i - 1] == 'j' and self.df['stock_tf' + str(self.TF)].iloc[i] > 25:
+                elif self.cons['cycle'].iloc[i - 1] == 'j' and self.df['stock_tf' + str(self.TF)].iloc[i] > 25 and self.cons['init'].iloc[
+                    i] == False :
                     self.cons['cycle'].iloc[i] = 'j'
-                elif self.cons['O'].iloc[i]  and self.cons['cycle'].iloc[i - 1] == 'v':
+                elif self.cons['O'].iloc[i]  and self.cons['cycle'].iloc[i - 1] == 'v' and self.df['close_tf' + str(self.TF)].iloc[i] > self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'O'
                 elif self.cons['cycle'].iloc[i - 1] == 'O' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75 and \
                         self.df['close_tf' + str(self.TF)].iloc[i] > \
@@ -382,9 +391,10 @@ class Conditions(Datafeed):
                     self.cons_D['cycle'].iloc[i] = 'r'
                 elif self.cons_D['j'].iloc[i] :
                     self.cons_D['cycle'].iloc[i] = 'j'
-                elif self.cons_D['cycle'].iloc[i - 1] == 'j' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75:
+                elif self.cons_D['cycle'].iloc[i - 1] == 'j' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75 and self.cons_D['init'].iloc[
+                    i] == False:
                     self.cons_D['cycle'].iloc[i] = 'j'
-                elif self.cons_D['Or'].iloc[i]  and self.cons_D['cycle'].iloc[i - 1] == 'r':
+                elif self.cons_D['Or'].iloc[i]  and self.cons_D['cycle'].iloc[i - 1] == 'r' and self.df['close_tf' + str(self.TF)].iloc[i] < self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons_D['cycle'].iloc[i] = 'Or'
                 elif self.cons_D['cycle'].iloc[i - 1] == 'Or' and (self.df['stock_tf' + str(self.TF)].iloc[i] > 25) and \
                         self.df['close_tf' + str(self.TF)].iloc[i] < \
