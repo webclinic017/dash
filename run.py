@@ -4,8 +4,12 @@ from datetime import datetime
 
 import os
 
-subprocess.Popen([sys.executable, "oopdatafeed.py"])
-subprocess.Popen([sys.executable, "api.py"])
+
+try:
+    subprocess.Popen([sys.executable, "oopdatafeed.py"])
+    subprocess.Popen([sys.executable, "api.py"])
+except:
+    print('ERROR')
 
 
 os.chdir('my-app4')

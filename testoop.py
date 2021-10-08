@@ -1,24 +1,40 @@
 
 
-t = Conditions('USDJPY', mt5.TIMEFRAME_M15)
+t = Conditions('GBPUSD', mt5.TIMEFRAME_M15)
 
 t.Traitement()
 
+t.cons
+
+t.cons[t.starting_index::]
+
+
 t.cons_D
 
+t.cons_D[t.starting_index_D::]
 
-t = Eng('WTI', mt5.TIMEFRAME_H4)
+
+
+t = Datafeed('EURUSD', mt5.TIMEFRAME_H4)
+
+df = t.all_data()
+
+df['stock_tf' + str(t.TF)]
+
+t.Traitement()
+
+t = Eng('EURUSD', mt5.TIMEFRAME_H1)
 
 
 t.eng_con_2()
-t.cons_eng
-t.starting_index_eng
+t.cons_eng_D
+t.starting_index_eng_D
 
 
-list(t.cons['cycle'][t.starting_index::])
+list(t.cons_D['cycle'][t.starting_index_D::])
 
 
-t.cons[t.starting_index::]
+t.cons_eng_D[t.starting_index_eng_D -1 ::]
 
 
 

@@ -1,4 +1,3 @@
-
 import time
 import pandas as pd
 from datetime import datetime
@@ -11,20 +10,20 @@ import chime
 import numpy as np
 import os
 
-
 from man import db
 from datetime import datetime
 from man import Item
 from man import Ud
 
-class Datafeed(object):
 
-    mt = r"C:\Program Files\XM Global MT5\terminal64.exe"
-    currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'OIL-NOV21',  'US500Cash', 'US100Cash', 'US30Cash',
-             'EU50Cash', 'GER40Cash']
+class Datafeed(object):
+    mt = r"C:\Program Files\XM MT5\terminal64.exe"
+    currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'OIL-NOV21', 'US500Cash', 'US100Cash', 'US30Cash',
+                 'EU50Cash', 'GER40Cash']
 
     tfs = [mt5.TIMEFRAME_M2, mt5.TIMEFRAME_M5, mt5.TIMEFRAME_M15, mt5.TIMEFRAME_H1, mt5.TIMEFRAME_H4,
-                mt5.TIMEFRAME_D1, mt5.TIMEFRAME_W1]
+           mt5.TIMEFRAME_D1, mt5.TIMEFRAME_W1]
+
     def __init__(self, currency, TF):
         self.currency = currency
         self.TF = TF
@@ -93,6 +92,16 @@ class Datafeed(object):
         self.computeEMA(rates_frame, period)
         period = 20
         self.computeEMA(rates_frame, period)
+        period = 25
+        self.computeEMA(rates_frame, period)
+        period = 30
+        self.computeEMA(rates_frame, period)
+        period = 35
+        self.computeEMA(rates_frame, period)
+        period = 40
+        self.computeEMA(rates_frame, period)
+        period = 45
+        self.computeEMA(rates_frame, period)
         period = 50
         self.computeEMA(rates_frame, period)
         return rates_frame
@@ -153,64 +162,83 @@ class Conditions(Datafeed):
                 self.ema_cons['con_ema50_' + str(tf)] = self.df['close_tf' + str(tf)] > self.df[
                     'ema_tf' + str(tf) + '_' + str(50)]
 
+        self.ema_cons['ema_ranked' + str(self.TF)] = self.df['close_tf' + str(self.TF)] > self.df[
+            'ema_tf' + str(self.TF) + '_' + str(50)]
+
         if self.TF == mt5.TIMEFRAME_M2:
             self.cons['all_trend_tfs'] = (
-                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M2)] ) &
-                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M5)] ) &
-                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M15)] ) &
+                    (self.ema_cons['ema_ranked' + str(self.TF)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M2)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M5)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M15)]) &
                     (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H1)]) &
-                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M2)] ) &
-                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M5)] ) &
-                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M15)] ) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M2)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M5)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M15)]) &
                     (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H1)])
                                             )
 
         elif self.TF == mt5.TIMEFRAME_M5:
-            self.cons['all_trend_tfs'] = (((self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M5)] ) & (
-                    self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M5)] )) & (
-                                                  (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M15)] ) & (
-                                                  self.ema_cons[
-                                                      'con_ema50_' + str(mt5.TIMEFRAME_M15)] )) & (
-                                                  (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H1)] ) & (
-                                                  self.ema_cons[
-                                                      'con_ema50_' + str(mt5.TIMEFRAME_H1)] )) & (((
-                                                                                                                  self.ema_cons[
-                                                                                                                      'con_ema20_' + str(
-                                                                                                                          mt5.TIMEFRAME_H4)] ) & (
-                                                                                                                  self.ema_cons[
-                                                                                                                      'con_ema50_' + str(
-                                                                                                                          mt5.TIMEFRAME_H4)] )) | (
-                                                                                                                 (
-                                                                                                                         self.ema_cons[
-                                                                                                                             'con_ema20_' + str(
-                                                                                                                                 mt5.TIMEFRAME_D1)] ) & (
-                                                                                                                         self.ema_cons[
-                                                                                                                             'con_ema50_' + str(
-                                                                                                                                 mt5.TIMEFRAME_D1)] ))))
+            self.cons['all_trend_tfs'] = (
+
+                    (self.ema_cons['ema_ranked' + str(self.TF)]) &
+
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M5)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M5)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M15)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M15)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H1)]) &
+                    (((self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H4)]) &
+                      (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H4)])) |
+                     ((self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_D1)]) &
+                      (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_D1)])))
+            )
         elif self.TF == mt5.TIMEFRAME_M15:
-            self.cons['all_trend_tfs'] = ((self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M15)]) & (
-                    self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H1)]) & (
-                                                  self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H4)]) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M15)]) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H1)]) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H4)] ))
+            self.cons['all_trend_tfs'] = (
+
+                    (self.ema_cons['ema_ranked' + str(self.TF)]) &
+
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_M15)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H4)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_M15)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H4)])
+            )
         elif self.TF == mt5.TIMEFRAME_H1:
-            self.cons['all_trend_tfs'] = ((self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H1)] ) & (
-                    self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H4)] ) & (
-                                                  self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_D1)] ) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H1)] ) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H4)] ) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_D1)] ))
+            self.cons['all_trend_tfs'] = (
+
+                    (self.ema_cons['ema_ranked' + str(self.TF)]) &
+
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H4)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_D1)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H4)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_D1)])
+            )
         elif self.TF == mt5.TIMEFRAME_H4:
-            self.cons['all_trend_tfs'] = ((self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H4)] ) & (
-                    self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_D1)] ) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H4)] ) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_D1)] ))
+            self.cons['all_trend_tfs'] = (
+
+                    (self.ema_cons['ema_ranked' + str(self.TF)]) &
+
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_H4)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_D1)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_H4)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_D1)])
+            )
+
         elif self.TF == mt5.TIMEFRAME_D1:
-            self.cons['all_trend_tfs'] = ((self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_D1)] ) & (
-                    self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_W1)] ) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_D1)] ) & (
-                                                  self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_W1)] ))
+            self.cons['all_trend_tfs'] = (
+
+                    (self.ema_cons['ema_ranked' + str(self.TF)]) &
+
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_D1)]) &
+                    (self.ema_cons['con_ema20_' + str(mt5.TIMEFRAME_W1)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_D1)]) &
+                    (self.ema_cons['con_ema50_' + str(mt5.TIMEFRAME_W1)])
+            )
 
         #########################
         self.ema_cons_D = pd.DataFrame()
@@ -221,73 +249,84 @@ class Conditions(Datafeed):
                 self.ema_cons_D['con_ema50_' + str(tf)] = self.df['close_tf' + str(tf)] < self.df[
                     'ema_tf' + str(tf) + '_' + str(50)]
 
-        if self.TF == mt5.TIMEFRAME_M1:
-            self.cons_D['all_trend_tfs'] = ((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M1)] ) & (
-                    self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M5)] ) & (self.ema_cons_D[
-                                                                                          'con_ema20_' + str(
-                                                                                              mt5.TIMEFRAME_M15)] ) & (
-                                                    self.ema_cons_D[
-                                                        'con_ema50_' + str(mt5.TIMEFRAME_M1)] ) & (
-                                                    self.ema_cons_D[
-                                                        'con_ema50_' + str(mt5.TIMEFRAME_M5)] ) & (
-                                                    self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M15)] ))
+        self.ema_cons_D['ema_ranked' + str(self.TF)] = self.df['close_tf' + str(self.TF)] < self.df[
+            'ema_tf' + str(self.TF) + '_' + str(50)]
+
+
+        if self.TF == mt5.TIMEFRAME_M2:
+            self.cons_D['all_trend_tfs'] = (
+
+                    self.ema_cons_D['ema_ranked' + str(self.TF)] &
+
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M2)]) &
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M5)]) &
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M15)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M2)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M5)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M15)])
+            )
         elif self.TF == mt5.TIMEFRAME_M5:
-            self.cons_D['all_trend_tfs'] = (((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M5)] ) & (
-                    self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M5)] )) & ((self.ema_cons_D[
-                                                                                            'con_ema20_' + str(
-                                                                                                mt5.TIMEFRAME_M15)] ) & (
-                                                                                               self.ema_cons_D[
-                                                                                                   'con_ema50_' + str(
-                                                                                                       mt5.TIMEFRAME_M15)] )) & (
-                                                    (self.ema_cons_D[
-                                                         'con_ema20_' + str(mt5.TIMEFRAME_H1)] ) & (
-                                                            self.ema_cons_D['con_ema50_' + str(
-                                                                mt5.TIMEFRAME_H1)] )) & (((
-                                                                                                         self.ema_cons_D[
-                                                                                                             'con_ema20_' + str(
-                                                                                                                 mt5.TIMEFRAME_H4)] ) & (
-                                                                                                         self.ema_cons_D[
-                                                                                                             'con_ema50_' + str(
-                                                                                                                 mt5.TIMEFRAME_H4)] )) | (
-                                                                                                        (
-                                                                                                                self.ema_cons_D[
-                                                                                                                    'con_ema20_' + str(
-                                                                                                                        mt5.TIMEFRAME_D1)] ) & (
-                                                                                                                self.ema_cons_D[
-                                                                                                                    'con_ema50_' + str(
-                                                                                                                        mt5.TIMEFRAME_D1)] ))))
+            self.cons_D['all_trend_tfs'] = (
+
+                    self.ema_cons_D['ema_ranked' + str(self.TF)] &
+
+                    ((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M5)]) &
+                     (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M5)])) &
+                    ((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M15)]) &
+                     (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M15)])) &
+                    ((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H1)]) &
+                     (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_H1)])) &
+                    (((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H4)]) &
+                      (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_H4)])) |
+                     ((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_D1)]) &
+                      (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_D1)])))
+            )
         elif self.TF == mt5.TIMEFRAME_M15:
-            self.cons_D['all_trend_tfs'] = ((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M15)] ) & (
-                    self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H1)] ) & (self.ema_cons_D[
-                                                                                          'con_ema20_' + str(
-                                                                                              mt5.TIMEFRAME_H4)] ) & (
-                                                    self.ema_cons_D[
-                                                        'con_ema50_' + str(mt5.TIMEFRAME_M15)] ) & (
-                                                    self.ema_cons_D[
-                                                        'con_ema50_' + str(mt5.TIMEFRAME_H1)] ) & (
-                                                    self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_H4)] ))
+            self.cons_D['all_trend_tfs'] = (
+
+                    self.ema_cons_D['ema_ranked' + str(self.TF)] &
+
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M15)]) &
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H4)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M15)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_H4)])
+            )
         elif self.TF == mt5.TIMEFRAME_H1:
-            self.cons_D['all_trend_tfs'] = ((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H1)] ) & (
-                    self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H4)] ) & (self.ema_cons_D[
-                                                                                          'con_ema20_' + str(
-                                                                                              mt5.TIMEFRAME_D1)] ) & (
-                                                    self.ema_cons_D[
-                                                        'con_ema50_' + str(mt5.TIMEFRAME_H1)] ) & (
-                                                    self.ema_cons_D[
-                                                        'con_ema50_' + str(mt5.TIMEFRAME_H4)] ) & (
-                                                    self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_D1)] ))
+            self.cons_D['all_trend_tfs'] = (
+
+                    self.ema_cons_D['ema_ranked' + str(self.TF)] &
+
+
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H4)]) &
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_D1)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_H4)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_D1)])
+            )
         elif self.TF == mt5.TIMEFRAME_H4:
-            self.cons_D['all_trend_tfs'] = ((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H4)] ) & (
-                    self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_D1)] ) & (self.ema_cons_D[
-                                                                                          'con_ema50_' + str(
-                                                                                              mt5.TIMEFRAME_H4)] ) & (
-                                                    self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_D1)] ))
+            self.cons_D['all_trend_tfs'] = (
+
+                    self.ema_cons_D['ema_ranked' + str(self.TF)] &
+
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H4)]) &
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_D1)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_H4)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_D1)])
+            )
+
         elif self.TF == mt5.TIMEFRAME_D1:
-            self.cons_D['all_trend_tfs'] = ((self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_D1)] ) & (
-                    self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_W1)] ) & (self.ema_cons_D[
-                                                                                          'con_ema50_' + str(
-                                                                                              mt5.TIMEFRAME_D1)] ) & (
-                                                    self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_W1)] ))
+            self.cons_D['all_trend_tfs'] = (
+
+                    self.ema_cons_D['ema_ranked' + str(self.TF)] &
+
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_D1)]) &
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_W1)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_D1)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_W1)])
+            )
 
         return self.cons
 
@@ -300,9 +339,9 @@ class Conditions(Datafeed):
         return self.cons
 
     def con_acc(self):
-        self.cons['acc'] = ((self.cons['con_rsi3'] ) & (self.cons['all_trend_tfs'] ))
+        self.cons['acc'] = ((self.cons['con_rsi3']) & (self.cons['all_trend_tfs']))
         #######################
-        self.cons_D['acc'] = ((self.cons_D['con_rsi3'] ) & (self.cons_D['all_trend_tfs'] ))
+        self.cons_D['acc'] = ((self.cons_D['con_rsi3']) & (self.cons_D['all_trend_tfs']))
 
     def trt(self):
         if self.cons['acc'].any():
@@ -323,27 +362,27 @@ class Conditions(Datafeed):
                 self.df['rsi_tf' + str(self.tfs[self.tfs.index(self.TF) + 1]) + '_14'] > 25)
 
     def v_ou_j(self):
-        self.cons['v'] = ((self.df['stock_tf' + str(self.TF)] > 75) & (self.cons['con_rsi14_up'] ))
+        self.cons['v'] = ((self.df['stock_tf' + str(self.TF)] > 75) & (self.cons['con_rsi14_up']))
         self.cons['j'] = ((self.df['stock_tf' + str(self.TF)] > 75) & (self.cons['con_rsi14_up'] == False))
         #########################
-        self.cons_D['r'] = ((self.df['stock_tf' + str(self.TF)] < 25) & (self.cons_D['con_rsi14_up'] ))
+        self.cons_D['r'] = ((self.df['stock_tf' + str(self.TF)] < 25) & (self.cons_D['con_rsi14_up']))
         self.cons_D['j'] = ((self.df['stock_tf' + str(self.TF)] < 25) & (self.cons_D['con_rsi14_up'] == False))
 
     def O_ou_Oj(self):
-        self.cons['O'] = ((self.cons['con_stock'] ) & (self.cons['con_rsi14'] ) & (
-                self.cons['con_rsi14_up'] ))
-        self.cons['Oj'] = ((self.cons['con_stock'] ) & (self.cons['con_rsi14'] ) & (
+        self.cons['O'] = ((self.cons['con_stock']) & (self.cons['con_rsi14']) & (
+            self.cons['con_rsi14_up']))
+        self.cons['Oj'] = ((self.cons['con_stock']) & (self.cons['con_rsi14']) & (
                 self.cons['con_rsi14_up'] == False))
         #########################
-        self.cons_D['Or'] = ((self.cons_D['con_stock'] ) & (self.cons_D['con_rsi14'] ) & (
-                self.cons_D['con_rsi14_up'] ))
-        self.cons_D['Ojr'] = ((self.cons_D['con_stock'] ) & (self.cons_D['con_rsi14'] ) & (
+        self.cons_D['Or'] = ((self.cons_D['con_stock']) & (self.cons_D['con_rsi14']) & (
+            self.cons_D['con_rsi14_up']))
+        self.cons_D['Ojr'] = ((self.cons_D['con_stock']) & (self.cons_D['con_rsi14']) & (
                 self.cons_D['con_rsi14_up'] == False))
 
     def ini(self):
         self.cons['init'] = False
 
-        if self.starting_index is not None :
+        if self.starting_index is not None:
             self.ini = self.df['stock_tf' + str(self.TF)][self.starting_index]
             i = self.starting_index
             while i < len(self.df):
@@ -353,7 +392,7 @@ class Conditions(Datafeed):
                 i += 1
 
         self.cons_D['init'] = False
-        if self.starting_index_D is not None :
+        if self.starting_index_D is not None:
             self.inir = self.df['stock_tf' + str(self.TF)][self.starting_index_D]
             i = self.starting_index_D
             while i < len(self.df):
@@ -368,19 +407,24 @@ class Conditions(Datafeed):
         if self.starting_index is not None:
             self.cons['cycle'].iloc[self.starting_index] = 'v'
             for i in range(self.starting_index, len(self.cons)):
-                if self.cons['cycle'].iloc[i - 1] == 'v' and self.df['stock_tf' + str(self.TF)].iloc[i] > 25 and self.cons['init'].iloc[
-                    i] == False and self.df['close_tf' + str(self.TF)].iloc[i] > self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
+                if self.cons['cycle'].iloc[i - 1] == 'v' and self.df['stock_tf' + str(self.TF)].iloc[i] > 25 and \
+                        self.cons['init'].iloc[
+                            i] == False and self.df['close_tf' + str(self.TF)].iloc[i] > \
+                        self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'v'
                 elif self.cons['j'].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'j'
-                elif self.cons['cycle'].iloc[i - 1] == 'j' and self.df['stock_tf' + str(self.TF)].iloc[i] > 25 and self.cons['init'].iloc[
-                    i] == False :
+                elif self.cons['cycle'].iloc[i - 1] == 'j' and self.df['stock_tf' + str(self.TF)].iloc[i] > 25 and \
+                        self.cons['init'].iloc[
+                            i] == False:
                     self.cons['cycle'].iloc[i] = 'j'
-                elif self.cons['O'].iloc[i]  and self.cons['cycle'].iloc[i - 1] == 'v' and self.df['close_tf' + str(self.TF)].iloc[i] > self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
+                elif self.cons['O'].iloc[i] and self.cons['cycle'].iloc[i - 1] == 'v' and \
+                        self.df['close_tf' + str(self.TF)].iloc[i] > \
+                        self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'O'
                 elif self.cons['cycle'].iloc[i - 1] == 'O' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75 and \
                         self.df['close_tf' + str(self.TF)].iloc[i] > \
-                        self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i] :
+                        self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'O'
                 elif self.cons['Oj'].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'Oj'
@@ -391,21 +435,26 @@ class Conditions(Datafeed):
         if self.starting_index_D is not None:
             self.cons_D['cycle'].iloc[self.starting_index_D] = 'r'
             for i in range(self.starting_index_D, len(self.cons_D)):
-                if self.cons_D['cycle'].iloc[i - 1] == 'r' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75 and self.cons_D['init'].iloc[
-                    i] == False and self.df['close_tf' + str(self.TF)].iloc[i] < self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
+                if self.cons_D['cycle'].iloc[i - 1] == 'r' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75 and \
+                        self.cons_D['init'].iloc[
+                            i] == False and self.df['close_tf' + str(self.TF)].iloc[i] < \
+                        self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons_D['cycle'].iloc[i] = 'r'
-                elif self.cons_D['j'].iloc[i] :
+                elif self.cons_D['j'].iloc[i]:
                     self.cons_D['cycle'].iloc[i] = 'j'
-                elif self.cons_D['cycle'].iloc[i - 1] == 'j' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75 and self.cons_D['init'].iloc[
-                    i] == False:
+                elif self.cons_D['cycle'].iloc[i - 1] == 'j' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75 and \
+                        self.cons_D['init'].iloc[
+                            i] == False:
                     self.cons_D['cycle'].iloc[i] = 'j'
-                elif self.cons_D['Or'].iloc[i]  and self.cons_D['cycle'].iloc[i - 1] == 'r' and self.df['close_tf' + str(self.TF)].iloc[i] < self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
+                elif self.cons_D['Or'].iloc[i] and self.cons_D['cycle'].iloc[i - 1] == 'r' and \
+                        self.df['close_tf' + str(self.TF)].iloc[i] < \
+                        self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons_D['cycle'].iloc[i] = 'Or'
                 elif self.cons_D['cycle'].iloc[i - 1] == 'Or' and (self.df['stock_tf' + str(self.TF)].iloc[i] > 25) and \
                         self.df['close_tf' + str(self.TF)].iloc[i] < \
-                        self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i] :
+                        self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i]:
                     self.cons_D['cycle'].iloc[i] = 'Or'
-                elif self.cons_D['Ojr'].iloc[i] :
+                elif self.cons_D['Ojr'].iloc[i]:
                     self.cons_D['cycle'].iloc[i] = 'Ojr'
 
     def signal_U(self):
@@ -457,11 +506,17 @@ class Eng(Datafeed):
     def __init__(self, currency, TF):
         Datafeed.__init__(self, currency, TF)
 
-    def eng_con_1(self, rsi , rsi_level):
+    def eng_con_1(self, rsi, rsi_level):
         df = self.getdf()
         ############################
-        self.cons_eng = pd.DataFrame(df[["time" ,"close_tf"+str(self.TF), "rsi_tf"+str(self.TF) + '_'+ str(rsi), 'ema_tf'+str(self.TF)+'_20', 'ema_tf'+str(self.TF)+'_50']])
-        self.cons_eng['acc'] = ((df['rsi_tf'+str(self.TF) + '_' + str(rsi)].shift(-1) > rsi_level) & (df['close_tf'+str(self.TF) ].shift(-1) > df['ema_tf'+str(self.TF)+'_20'].shift(-1)) & (df['close_tf'+str(self.TF)].shift(-1) > df['ema_tf'+str(self.TF)+'_50'].shift(-1))& (df['close_tf'+str(self.TF)] < df['low_tf'+str(self.TF)].shift(-1)) & (df['rsi_tf'+str(self.TF) + '_'+ str(rsi)] < 75))
+        self.cons_eng = pd.DataFrame(df[["time", "close_tf" + str(self.TF), "rsi_tf" + str(self.TF) + '_' + str(rsi),
+                                         'ema_tf' + str(self.TF) + '_20', 'ema_tf' + str(self.TF) + '_50']])
+        self.cons_eng['acc'] = ((df['rsi_tf' + str(self.TF) + '_' + str(rsi)].shift(+1) > rsi_level) & (
+                df['close_tf' + str(self.TF)].shift(+1) > df['ema_tf' + str(self.TF) + '_20'].shift(+1)) & (
+                                        df['close_tf' + str(self.TF)].shift(+1) > df[
+                                    'ema_tf' + str(self.TF) + '_50'].shift(+1)) & (
+                                        df['close_tf' + str(self.TF)] < df['low_tf' + str(self.TF)].shift(+1)) & (
+                                        df['rsi_tf' + str(self.TF) + '_' + str(rsi)] < 75))
         self.starting_index_eng = self.cons_eng['acc'][::-1].idxmax()
 
         if self.cons_eng['acc'].any():
@@ -470,29 +525,39 @@ class Eng(Datafeed):
             self.starting_index_eng = None
 
         self.eng_l3 = False
-        if self.starting_index_eng is not None and self.starting_index_eng > len(df) - 8 :
+        if self.starting_index_eng is not None and self.starting_index_eng > len(df) - 8:
             self.eng_l3 = True
             for i in range(self.starting_index_eng, len(df)):
-                 if df['low_tf'+str(self.TF)][i] <= df['ema_tf'+str(self.TF)+'_20'][i] or df['close_tf'+str(self.TF)][i] > df['high_tf'+str(self.TF)][self.starting_index_eng] :
-                     self.eng_l3 = False
-                     break
+                if df['low_tf' + str(self.TF)][i] <= df['ema_tf' + str(self.TF) + '_20'][i] or \
+                        df['close_tf' + str(self.TF)][i] > df['high_tf' + str(self.TF)][self.starting_index_eng]:
+                    self.eng_l3 = False
+                    break
+
         ###############################
-        self.cons_eng_D = pd.DataFrame(df[["time" ,"close_tf"+str(self.TF), "rsi_tf"+str(self.TF) + '_'+ str(rsi), 'ema_tf'+str(self.TF)+'_20', 'ema_tf'+str(self.TF)+'_50']])
-        self.cons_eng_D['acc'] = ((df['rsi_tf'+str(self.TF) + '_' + str(rsi)].shift(-1) < 100 -rsi_level) & (df['close_tf'+str(self.TF) ].shift(-1) < df['ema_tf'+str(self.TF)+'_20'].shift(-1)) & (df['close_tf'+str(self.TF)].shift(-1) < df['ema_tf'+str(self.TF)+'_50'].shift(-1))& (df['close_tf'+str(self.TF)] > df['high_tf'+str(self.TF)].shift(-1)) & (df['rsi_tf'+str(self.TF) + '_'+ str(rsi)] > 25))
+
+        self.cons_eng_D = pd.DataFrame(df[["time", "close_tf" + str(self.TF), "rsi_tf" + str(self.TF) + '_' + str(rsi),
+                                           'ema_tf' + str(self.TF) + '_20', 'ema_tf' + str(self.TF) + '_50']])
+        self.cons_eng_D['acc'] = ((df['rsi_tf' + str(self.TF) + '_' + str(rsi)].shift(+1) < 100 - rsi_level)) & (
+                df['close_tf' + str(self.TF)].shift(+1) < df['ema_tf' + str(self.TF) + '_20'].shift(+1)) & (
+                                         df['close_tf' + str(self.TF)].shift(+1) < df[
+                                     'ema_tf' + str(self.TF) + '_50'].shift(+1)) & (
+                                         df['close_tf' + str(self.TF)] > df['high_tf' + str(self.TF)].shift(+1)) & (
+                                         df['rsi_tf' + str(self.TF) + '_' + str(rsi)] > 25)
         self.starting_index_eng_D = self.cons_eng_D['acc'][::-1].idxmax()
         self.eng_D3 = False
         if self.cons_eng_D['acc'].any():
             self.starting_index_eng_D = self.cons_eng_D['acc'][::-1].idxmax()
         else:
             self.starting_index_eng_D = None
-        if self.starting_index_eng_D is not None and self.starting_index_eng_D > len(df) - 8 :
+        if self.starting_index_eng_D is not None and self.starting_index_eng_D > len(df) - 8:
             self.eng_D3 = True
             for i in range(self.starting_index_eng_D, len(df)):
-                 if df['close_tf'+str(self.TF)][i] < df['low_tf'+str(self.TF)][self.starting_index_eng_D] or df['high_tf'+str(self.TF)][i] >= df['ema_tf'+str(self.TF)+'_20'][i]:
-                     self.eng_D3 = False
-                     break
+                if df['close_tf' + str(self.TF)][i] < df['low_tf' + str(self.TF)][self.starting_index_eng_D] or \
+                        df['high_tf' + str(self.TF)][i] >= df['ema_tf' + str(self.TF) + '_20'][i]:
+                    self.eng_D3 = False
+                    break
         ###############################
-        if self.eng_l3 :
+        if self.eng_l3:
             flesh3 = 'D'
         elif self.eng_D3:
             flesh3 = 'U'
@@ -510,11 +575,11 @@ class Eng(Datafeed):
         return self.flesh
 
 
-class Manage(Conditions,Eng):
+class Manage(Conditions, Eng):
 
     def __init__(self):
 
-        self.TFs = [mt5.TIMEFRAME_M1, mt5.TIMEFRAME_M5,
+        self.TFs = [mt5.TIMEFRAME_M2, mt5.TIMEFRAME_M5,
                     mt5.TIMEFRAME_M15, mt5.TIMEFRAME_H1,
                     mt5.TIMEFRAME_H4, mt5.TIMEFRAME_D1]
 
@@ -528,14 +593,14 @@ class Manage(Conditions,Eng):
 
     def toshow(self):
         result = np.array(list(map(self.addition, self.currencys)))
-        data = {'I': self.currencys, 'M1': result[:, 0], 'M5': result[:, 1], 'M15': result[:, 2], 'H1': result[:, 3],
+        data = {'I': self.currencys, 'M2': result[:, 0], 'M5': result[:, 1], 'M15': result[:, 2], 'H1': result[:, 3],
                 'H4': result[:, 4], 'D1': result[:, 5]}
         df_final = pd.DataFrame(data)
         return df_final
 
     @staticmethod
-    def update_map_M1(curr):
-        TFi = mt5.TIMEFRAME_M1
+    def update_map_M2(curr):
+        TFi = mt5.TIMEFRAME_M2
         test1 = Conditions(curr, TFi)
         signal = test1.Traitement()
         return signal
@@ -587,62 +652,69 @@ class Manage(Conditions,Eng):
 
     def toshow_eng(self):
         result_eng = np.array(list(map(self.addition_eng, self.currencys)))
-        data_eng = {'I': self.currencys, 'M1': result_eng[:, 0], 'M5': result_eng[:, 1], 'M15': result_eng[:, 2], 'H1': result_eng[:, 3],
-                'H4': result_eng[:, 4], 'D1': result_eng[:, 5]}
+        data_eng = {'I': self.currencys, 'M2': result_eng[:, 0], 'M5': result_eng[:, 1], 'M15': result_eng[:, 2],
+                    'H1': result_eng[:, 3],
+                    'H4': result_eng[:, 4], 'D1': result_eng[:, 5]}
         df_final_eng = pd.DataFrame(data_eng)
         return df_final_eng
 
     @staticmethod
-    def update_map_M1_eng(curr):
-        TFi = mt5.TIMEFRAME_M1
+    def update_map_M2_eng(curr):
+        TFi = mt5.TIMEFRAME_M2
         test1_eng = Eng(curr, TFi)
         signal_eng = test1_eng.eng_con_2()
         return signal_eng
+
     @staticmethod
     def update_map_M5_eng(curr):
         TFi = mt5.TIMEFRAME_M5
         test1_eng = Eng(curr, TFi)
         signal_eng = test1_eng.eng_con_2()
         return signal_eng
+
     @staticmethod
     def update_map_M15_eng(curr):
         TFi = mt5.TIMEFRAME_M15
         test1_eng = Eng(curr, TFi)
         signal_eng = test1_eng.eng_con_2()
         return signal_eng
+
     @staticmethod
     def update_map_H1_eng(curr):
         TFi = mt5.TIMEFRAME_H1
         test1_eng = Eng(curr, TFi)
         signal_eng = test1_eng.eng_con_2()
         return signal_eng
+
     @staticmethod
     def update_map_H4_eng(curr):
         TFi = mt5.TIMEFRAME_H1
         test1_eng = Eng(curr, TFi)
         signal_eng = test1_eng.eng_con_2()
         return signal_eng
+
     @staticmethod
     def update_map_D1_eng(curr):
-        TFi = mt5.TIMEFRAME_H1
+        TFi = mt5.TIMEFRAME_D1
         test1_eng = Eng(curr, TFi)
         signal_eng = test1_eng.eng_con_2()
         return signal_eng
 
     ########################## DB #############################
 
-    def to_db(self, df_final , df_final_eng):
+    def to_db(self, df_final, df_final_eng):
 
         db.drop_all()
         db.create_all()
         for i in range(len(df_final)):
-            item = Item(name=self.currencys[i], M1=df_final['M1'][i], M5=df_final['M5'][i], M15=df_final['M15'][i],
+            item = Item(name=self.currencys[i], M1=df_final['M2'][i], M5=df_final['M5'][i], M15=df_final['M15'][i],
                         H1=df_final['H1'][i], H4=df_final['H4'][i], D1=df_final['D1'][i])
             db.session.add(item)
             db.session.commit()
         for i in range(len(df_final_eng)):
-            ud = Ud(name=self.currencys[i], M1=df_final_eng['M1'][i], M5=df_final_eng['M5'][i], M15=df_final_eng['M15'][i],
-                        H1=df_final_eng['H1'][i], H4=df_final_eng['H4'][i], D1=df_final_eng['D1'][i])
+            ud = Ud(name=self.currencys[i], M1=df_final_eng['M2'][i], M5=df_final_eng['M5'][i],
+                    M15=df_final_eng['M15'][i],
+                    H1=df_final_eng['H1'][i], H4=df_final_eng['H4'][i], D1=df_final_eng['D1'][i])
             db.session.add(ud)
             db.session.commit()
 
@@ -652,9 +724,9 @@ class Manage(Conditions,Eng):
         dt = datetime.now()
         updated = []
         if dt.second == 1:
-            df_final['M1'] = list(map(self.update_map_M1, self.currencys))
-            df_final_eng['M1'] = list(map(self.update_map_M1_eng, self.currencys))
-            updated.append('M1 Updated')
+            df_final['M2'] = list(map(self.update_map_M2, self.currencys))
+            df_final_eng['M2'] = list(map(self.update_map_M2_eng, self.currencys))
+            updated.append('M2 Updated')
             if dt.minute in [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]:
                 df_final['M5'] = list(map(self.update_map_M5, self.currencys))
                 df_final_eng['M5'] = list(map(self.update_map_M5_eng, self.currencys))
@@ -671,7 +743,7 @@ class Manage(Conditions,Eng):
                             df_final['H4'] = list(map(self.update_map_H4, self.currencys))
                             df_final_eng['H4'] = list(map(self.update_map_H4_eng, self.currencys))
                             updated.append('H4 Updated')
-            self.to_db(df_final,df_final_eng)
+            self.to_db(df_final, df_final_eng)
             print(updated)
             print(df_final)
             print(df_final_eng)
@@ -910,21 +982,14 @@ class Zone(Datafeed):
         return last_touche
 '''
 
-
-
-
-
 t = Manage()
 d = t.toshow()
 
 d_eng = t.toshow_eng()
 
-t.to_db(d,d_eng)
+t.to_db(d, d_eng)
 
 print(d)
 print(d_eng)
 while True:
-    t.update(d,d_eng)
-
-
-
+    t.update(d, d_eng)

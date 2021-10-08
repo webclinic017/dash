@@ -10,6 +10,9 @@ import pandas as pd
 import chime
 from flask_cors import CORS
 
+currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'OIL-NOV21',  'US500Cash', 'US100Cash', 'US30Cash',
+             'EU50Cash', 'GER40Cash']
+
 
 
 #from oopdatafeed import Manage
@@ -75,8 +78,7 @@ class UdSchema(ma.Schema):
 item_schema = ItemSchema()
 items_schema = ItemSchema(many=True)
 
-currencys = ['EURUSD', 'GBPUSD', 'USDCAD', 'USDJPY', 'GOLD', 'WTI', '#USSPX500', '#USNDAQ100', '#US30',
-             '#Germany30', '#Euro50', 'EURGBP']
+
 canceled_by_botton = []
 @app.route('/', methods=['POST'])
 def post_itmes():
@@ -93,6 +95,7 @@ def get_items():
     result = items_schema.dump(all_items)
     result1 = items_schema.dump(all_items)
     if len(canceled_by_botton) > 0:
+        print(canceled_by_botton)
         for canceled_by_botton_i in (canceled_by_botton):
             tf_cansulated = canceled_by_botton_i['tf']
             curr_cansulated = canceled_by_botton_i['curr']
