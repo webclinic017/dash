@@ -58,7 +58,7 @@ export class CellComponent implements OnInit {
     this.service.getAllCurrencies().subscribe(todo => console.log(todo));
 
 
-  console.log(this.a);
+  this.currencyInfo$.subscribe((value) => { console.log(value[0] ); })
   }
 
 
