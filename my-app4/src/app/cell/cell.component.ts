@@ -32,6 +32,10 @@ export class CellComponent implements OnInit {
   currencyInfo$: Observable<CurrencyInfo[]>;
 
 
+  a : any;
+
+
+
     addPersone(e : string, a : string){
 
     this.http.post<any>('http://127.0.0.1:8050/' , {"curr" : e , "tf" : a }  ).subscribe(data => {
@@ -46,13 +50,15 @@ export class CellComponent implements OnInit {
 
     this.currencyInfo$ = service.getAllCurrencies();
 
+
+
    }
 
   ngOnInit(): void {
+    this.service.getAllCurrencies().subscribe(todo => console.log(todo));
 
-  console.log(this.currencyInfo$);
 
-
+  console.log(this.a);
   }
 
 

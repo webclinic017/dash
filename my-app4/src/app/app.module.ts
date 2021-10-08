@@ -11,6 +11,7 @@ import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './in-memory-data.service';
 import { CellComponent } from './cell/cell.component';
 import { EngComponent } from './eng/eng.component';
+import { SerComponent } from './ser/ser.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { EngComponent } from './eng/eng.component';
     AppComponent,
     HeroesComponent,
     CellComponent,
-    EngComponent
+    EngComponent,
+    SerComponent
   ],
   imports: [
     BrowserModule,
