@@ -426,8 +426,14 @@ class Conditions(Datafeed):
                         self.df['close_tf' + str(self.TF)].iloc[i] > \
                         self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'O'
-                elif self.cons['Oj'].iloc[i]:
+                elif self.cons['Oj'].iloc[i] and self.cons['cycle'].iloc[i - 1] == 'j' and \
+                        self.df['close_tf' + str(self.TF)].iloc[i] > \
+                        self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'Oj'
+                elif self.cons['cycle'].iloc[i - 1] == 'Oj' and self.df['stock_tf' + str(self.TF)].iloc[i] < 75 and \
+                     self.df['close_tf' + str(self.TF)].iloc[i] > \
+                     self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i]:
+                     self.cons['cycle'].iloc[i] = 'Oj'
 
         #############################################
 
@@ -454,8 +460,15 @@ class Conditions(Datafeed):
                         self.df['close_tf' + str(self.TF)].iloc[i] < \
                         self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i]:
                     self.cons_D['cycle'].iloc[i] = 'Or'
-                elif self.cons_D['Ojr'].iloc[i]:
+                elif self.cons_D['Ojr'].iloc[i] and self.cons_D['cycle'].iloc[i - 1] == 'j' and \
+                        self.df['close_tf' + str(self.TF)].iloc[i] < \
+                        self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons_D['cycle'].iloc[i] = 'Ojr'
+                elif self.cons_D['cycle'].iloc[i - 1] == 'Ojr' and (self.df['stock_tf' + str(self.TF)].iloc[i] > 25) and \
+                        self.df['close_tf' + str(self.TF)].iloc[i] < \
+                        self.df['ema_tf' + str(self.TF) + '_' + str(50)].iloc[i]:
+                    self.cons_D['cycle'].iloc[i] = 'Ojr'
+
 
     def signal_U(self):
         self.final_U = 'chay'
@@ -568,10 +581,22 @@ class Eng(Datafeed):
 
     def eng_con_2(self):
         flesh1 = self.eng_con_1(3, 87)
+        flesh1 += '_3'
         flesh2 = self.eng_con_1(14, 75)
+        flesh2 += '_14'
         self.flesh = 'chay'
-        if flesh1 != 'chay' and flesh1 == flesh2:
+        if flesh1 == 'U_3' and flesh2 == 'U_14':
+            self.flesh = 'U'
+        elif flesh1 == 'D_3' and flesh2 == 'D_14':
+            self.flesh = 'D'
+        elif flesh1 == 'D_3':
             self.flesh = flesh1
+        elif flesh2 == 'D_14':
+            self.flesh = flesh2
+        elif flesh1 == 'U_3':
+            self.flesh = flesh1
+        elif flesh2 == 'D_14':
+            self.flesh = flesh2
         return self.flesh
 
 
@@ -986,6 +1011,15 @@ t = Manage()
 d = t.toshow()
 
 d_eng = t.toshow_eng()
+
+mini = ['M2', 'M5', 'M15', 'H1', 'H4']
+for i in mini:
+    for j in range(len(d)):
+        if d[i][j] == 'O' and d[mini[mini.index(i)+1]][j] == 'D':
+           d[i][j] = 'X'
+        if d[i][j] == 'Or' and d[mini[mini.index(i)+1]][j] == 'U':
+           d[i][j] = 'Xr'
+
 
 t.to_db(d, d_eng)
 
