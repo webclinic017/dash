@@ -9,6 +9,8 @@ import time
 import chime
 import numpy as np
 import os
+import json
+
 
 from man import db
 from datetime import datetime
@@ -263,7 +265,10 @@ class Conditions(Datafeed):
                     (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_M15)]) &
                     (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M2)]) &
                     (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M5)]) &
-                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M15)])
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_M15)]) &
+                    (self.ema_cons_D['con_ema20_' + str(mt5.TIMEFRAME_H1)]) &
+                    (self.ema_cons_D['con_ema50_' + str(mt5.TIMEFRAME_H1)])
+
             )
         elif self.TF == mt5.TIMEFRAME_M5:
             self.cons_D['all_trend_tfs'] = (
@@ -728,6 +733,16 @@ class Manage(Conditions, Eng):
     ########################## DB #############################
 
     def to_db(self, df_final, df_final_eng):
+
+        result = df_final.to_json(orient="records")
+        parsed = json.loads(result)
+        data = json.dumps(parsed, indent=4)
+        print(json.dumps(parsed, indent=4))
+        from firebase import firebase
+        firebase = firebase.FirebaseApplication("https://kacem-fee7c-default-rtdb.firebaseio.com/", None)
+        resultfire = firebase.post('kacem-fee7c-default-rtdb/Kace', data)
+        print(resultfire)
+
 
         db.drop_all()
         db.create_all()

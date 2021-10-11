@@ -1,6 +1,6 @@
 
 
-t = Conditions('GBPUSD', mt5.TIMEFRAME_M15)
+t = Conditions('GBPUSD', mt5.TIMEFRAME_M2)
 
 t.Traitement()
 
@@ -23,7 +23,7 @@ df['stock_tf' + str(t.TF)]
 
 t.Traitement()
 
-t = Eng('EURUSD', mt5.TIMEFRAME_H1)
+t = Eng('EURUSD', mt5.TIMEFRAME_M2)
 
 
 t.eng_con_2()
