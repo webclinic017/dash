@@ -27,7 +27,7 @@ export class HeroService implements OnDestroy {
     this.allCurrencies$ = timer(1, 3000).pipe(
       switchMap(() => http.get<CurrencyInfo[]>('http://127.0.0.1:8050/ ')),
       retry(),
-      tap(console.log),
+      //tap(console.log),
       share(),
       takeUntil(this.stopPolling)
     );

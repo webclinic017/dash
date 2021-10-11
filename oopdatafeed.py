@@ -164,8 +164,8 @@ class Conditions(Datafeed):
                 self.ema_cons['con_ema50_' + str(tf)] = self.df['close_tf' + str(tf)] > self.df[
                     'ema_tf' + str(tf) + '_' + str(50)]
 
-        self.ema_cons['ema_ranked' + str(self.TF)] = self.df['close_tf' + str(self.TF)] > self.df[
-            'ema_tf' + str(self.TF) + '_' + str(50)]
+        self.ema_cons['ema_ranked' + str(self.TF)] = (self.df['close_tf' + str(self.TF)] > self.df['ema_tf' + str(self.TF) + '_' + str(20)]) & (self.df['ema_tf' + str(self.TF) + '_' + str(20)] > self.df[
+            'ema_tf' + str(self.TF) + '_' + str(50)])
 
         if self.TF == mt5.TIMEFRAME_M2:
             self.cons['all_trend_tfs'] = (
@@ -251,8 +251,8 @@ class Conditions(Datafeed):
                 self.ema_cons_D['con_ema50_' + str(tf)] = self.df['close_tf' + str(tf)] < self.df[
                     'ema_tf' + str(tf) + '_' + str(50)]
 
-        self.ema_cons_D['ema_ranked' + str(self.TF)] = self.df['close_tf' + str(self.TF)] < self.df[
-            'ema_tf' + str(self.TF) + '_' + str(50)]
+        self.ema_cons_D['ema_ranked' + str(self.TF)] = (self.df['close_tf' + str(self.TF)] < self.df['ema_tf' + str(self.TF) + '_' + str(20)]) & (self.df['ema_tf' + str(self.TF) + '_' + str(20)] < self.df[
+            'ema_tf' + str(self.TF) + '_' + str(50)])
 
 
         if self.TF == mt5.TIMEFRAME_M2:

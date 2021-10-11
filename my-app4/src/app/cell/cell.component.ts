@@ -34,7 +34,7 @@ export class CellComponent implements OnInit {
 
   a : any;
 
-
+  tab :any;
 
     addPersone(e : string, a : string){
 
@@ -50,15 +50,18 @@ export class CellComponent implements OnInit {
 
     this.currencyInfo$ = service.getAllCurrencies();
 
-
+    this.tab = []
 
    }
 
   ngOnInit(): void {
-    this.service.getAllCurrencies().subscribe(todo => console.log(todo));
+    //this.service.getAllCurrencies().subscribe(todo => console.log(todo));
 
 
-  this.currencyInfo$.subscribe((value) => { console.log(value[0] ); })
+    this.currencyInfo$.subscribe((value) => { this.tab.push(value) ; })
+
+    console.log(this.tab)
+
   }
 
 

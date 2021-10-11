@@ -1,6 +1,6 @@
 
 
-t = Conditions('GBPUSD', mt5.TIMEFRAME_M2)
+t = Conditions('OIL-NOV21', mt5.TIMEFRAME_M5)
 
 t.Traitement()
 
