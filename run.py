@@ -6,8 +6,8 @@ import os
 
 
 try:
-    subprocess.Popen([sys.executable, "oopdatafeed.py"])
-    subprocess.Popen([sys.executable, "api.py"])
+    subprocess.Popen([sys.executable, "backend/oopdatafeed.py"])
+    subprocess.Popen([sys.executable, "backend/api.py"])
 except:
     print('ERROR')
 
