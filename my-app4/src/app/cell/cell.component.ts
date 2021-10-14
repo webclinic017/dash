@@ -34,15 +34,29 @@ export class CellComponent implements OnInit {
 
   a : any;
 
+  b : any;
+
   tab :any;
+
+  dont_show : string[] = [];
 
     addPersone(e : string, a : string){
 
+    this.b = {"curr" : e , "tf" : a }
+
+    console.log(this.b);
+
+    this.dont_show.push(this.b)
+    console.log(this.dont_show)
+
+
     this.http.post<any>('http://127.0.0.1:8050/' , {"curr" : e , "tf" : a }  ).subscribe(data => {
         this.postId = data.aa;
+        console.log(this.postId)
+
     })
 
-    console.log(this.postId)
+
 
     }
 
@@ -58,7 +72,11 @@ export class CellComponent implements OnInit {
     //this.service.getAllCurrencies().subscribe(todo => console.log(todo));
 
 
-    this.currencyInfo$.subscribe((value) => { this.tab.push(value) ; })
+    //this.currencyInfo$.subscribe((value) => {
+
+     //value.map(r) => (r == 'r') ;
+
+     //})
 
     console.log(this.tab)
 

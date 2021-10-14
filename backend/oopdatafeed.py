@@ -1027,9 +1027,9 @@ d = t.toshow()
 
 d_eng = t.toshow_eng()
 
-mini = ['M2', 'M5', 'M15', 'H1', 'H4']
+mini = ['M2', 'M5', 'M15', 'H1', 'H4', 'D1']
 for i in mini:
-    for j in range(len(d)):
+    for j in range(len(d)-1):
         if d[i][j] == 'O' and d[mini[mini.index(i)+1]][j] == 'D':
            d[i][j] = 'X'
         if d[i][j] == 'Or' and d[mini[mini.index(i)+1]][j] == 'U':
