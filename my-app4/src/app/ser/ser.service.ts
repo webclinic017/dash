@@ -3,8 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ColDef } from 'ag-grid-community';
 
-
-
 export interface Stock {
   D1: string
   H1: string
@@ -19,20 +17,20 @@ export interface Stock {
 
 @Injectable()
 export class MockServerService {
-  private stocksUrl: string = 'http://127.0.0.1:8050/';
+  private stocksUrl: string = 'https://kacem-fee7c-default-rtdb.firebaseio.com/kacem-fee7c-default-rtdb/Kace/-MljJ4OI6tZApxeBIJmQ';
 
 
   immutableData: Stock[] ;
 
-  constructor(private http: HttpClient) {
+  constructor( private http: HttpClient) {
   this.immutableData = []
   }
 
   getDataObservable(): Observable<Stock[]> {
-    return new Observable<Stock[]>(observer => {
-      this.http.get<Stock[]>(this.stocksUrl).subscribe((data: Stock[]) => {
-        this.immutableData = data;
-        observer.next(this.immutableData);
+    return new Observable<any>(observer => {
+      this.http.get<any>(this.stocksUrl).subscribe(todo => console.log(todo))
+        //this.immutableData = data;
+        //observer.next(this.immutableData);
 
         //setInterval(() => {
         //  this.immutableData = this.immutableData.map((row: Stock) =>
@@ -42,7 +40,7 @@ export class MockServerService {
         //  observer.next(this.immutableData);
         //}, 1000);
       });
-    });
-  }
+    };
+
 
  }

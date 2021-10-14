@@ -413,15 +413,13 @@ class Conditions(Datafeed):
             self.cons['cycle'].iloc[self.starting_index] = 'v'
             for i in range(self.starting_index, len(self.cons)):
                 if self.cons['cycle'].iloc[i - 1] == 'v' and self.df['stock_tf' + str(self.TF)].iloc[i] > 25 and \
-                        self.cons['init'].iloc[
-                            i] == False and self.df['close_tf' + str(self.TF)].iloc[i] > \
+                        self.cons['init'].iloc[i] == False and self.df['close_tf' + str(self.TF)].iloc[i] > \
                         self.df['ema_tf' + str(self.TF) + '_' + str(12)].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'v'
                 elif self.cons['j'].iloc[i]:
                     self.cons['cycle'].iloc[i] = 'j'
                 elif self.cons['cycle'].iloc[i - 1] == 'j' and self.df['stock_tf' + str(self.TF)].iloc[i] > 25 and \
-                        self.cons['init'].iloc[
-                            i] == False:
+                        self.cons['init'].iloc[i] == False:
                     self.cons['cycle'].iloc[i] = 'j'
                 elif self.cons['O'].iloc[i] and self.cons['cycle'].iloc[i - 1] == 'v' and \
                         self.df['close_tf' + str(self.TF)].iloc[i] > \
@@ -524,17 +522,29 @@ class Eng(Datafeed):
     def __init__(self, currency, TF):
         Datafeed.__init__(self, currency, TF)
 
-    def eng_con_1(self, rsi, rsi_level):
-        df = self.getdf()
+    def setdata(self):
+        self.df = self.getdf()
         ############################
-        self.cons_eng = pd.DataFrame(df[["time", "close_tf" + str(self.TF), "rsi_tf" + str(self.TF) + '_' + str(rsi),
-                                         'ema_tf' + str(self.TF) + '_20', 'ema_tf' + str(self.TF) + '_50']])
-        self.cons_eng['acc'] = ((df['rsi_tf' + str(self.TF) + '_' + str(rsi)].shift(+1) > rsi_level) & (
-                df['close_tf' + str(self.TF)].shift(+1) > df['ema_tf' + str(self.TF) + '_20'].shift(+1)) & (
-                                        df['close_tf' + str(self.TF)].shift(+1) > df[
-                                    'ema_tf' + str(self.TF) + '_50'].shift(+1)) & (
-                                        df['close_tf' + str(self.TF)] < df['low_tf' + str(self.TF)].shift(+1)) & (
-                                        df['rsi_tf' + str(self.TF) + '_' + str(rsi)] < 75))
+        self.cons_eng = pd.DataFrame(self.df[["time", "close_tf" + str(self.TF), "rsi_tf" + str(self.TF) + '_' + str(3),
+                                              "rsi_tf" + str(self.TF) + '_' + str(14),
+                                              'ema_tf' + str(self.TF) + '_20', 'ema_tf' + str(self.TF) + '_50']])
+
+        self.cons_eng_D = pd.DataFrame(
+            self.df[["time", "close_tf" + str(self.TF), "rsi_tf" + str(self.TF) + '_' + str(3),
+                     "rsi_tf" + str(self.TF) + '_' + str(14),
+                     'ema_tf' + str(self.TF) + '_20', 'ema_tf' + str(self.TF) + '_50']])
+
+    def eng_con_1(self, rsi, rsi_level):
+        ############################
+
+        self.cons_eng['acc_prime' + '_' + str(rsi)] = ((self.df['rsi_tf' + str(self.TF) + '_' + str(rsi)].shift(+1) > rsi_level) & (
+                self.df['close_tf' + str(self.TF)].shift(+1) > self.df['ema_tf' + str(self.TF) + '_20'].shift(+1)) &
+                        (self.df['close_tf' + str(self.TF)].shift(+1) > self.df['ema_tf' + str(self.TF) + '_50'].shift(+1)) )
+
+
+        self.cons_eng['acc'] = (self.cons_eng['acc_prime' + '_' + str(rsi)]) & (self.df['close_tf' + str(self.TF)] < self.df['low_tf' + str(self.TF)].shift(+1)) & (
+        self.df['rsi_tf' + str(self.TF) + '_' + str(rsi)] < 75)
+
         self.starting_index_eng = self.cons_eng['acc'][::-1].idxmax()
 
         if self.cons_eng['acc'].any():
@@ -543,38 +553,40 @@ class Eng(Datafeed):
             self.starting_index_eng = None
 
         self.eng_l3 = False
-        if self.starting_index_eng is not None and self.starting_index_eng > len(df) - 8:
+        if self.starting_index_eng is not None and self.starting_index_eng > len(self.df) - 8:
             self.eng_l3 = True
-            for i in range(self.starting_index_eng, len(df)):
-                if df['low_tf' + str(self.TF)][i] <= df['ema_tf' + str(self.TF) + '_20'][i] or \
-                        df['close_tf' + str(self.TF)][i] > df['high_tf' + str(self.TF)][self.starting_index_eng]:
+            for i in range(self.starting_index_eng, len(self.df)):
+                if self.df['low_tf' + str(self.TF)][i] <= self.df['ema_tf' + str(self.TF) + '_20'][i] or \
+                        self.df['close_tf' + str(self.TF)][i] > self.df['high_tf' + str(self.TF)][self.starting_index_eng]:
                     self.eng_l3 = False
                     break
 
         ###############################
 
-        self.cons_eng_D = pd.DataFrame(df[["time", "close_tf" + str(self.TF), "rsi_tf" + str(self.TF) + '_' + str(rsi),
-                                           'ema_tf' + str(self.TF) + '_20', 'ema_tf' + str(self.TF) + '_50']])
-        self.cons_eng_D['acc'] = ((df['rsi_tf' + str(self.TF) + '_' + str(rsi)].shift(+1) < 100 - rsi_level)) & (
-                df['close_tf' + str(self.TF)].shift(+1) < df['ema_tf' + str(self.TF) + '_20'].shift(+1)) & (
-                                         df['close_tf' + str(self.TF)].shift(+1) < df[
-                                     'ema_tf' + str(self.TF) + '_50'].shift(+1)) & (
-                                         df['close_tf' + str(self.TF)] > df['high_tf' + str(self.TF)].shift(+1)) & (
-                                         df['rsi_tf' + str(self.TF) + '_' + str(rsi)] > 25)
+        self.cons_eng_D['acc_prime' + '_' + str(rsi)] = (self.df['rsi_tf' + str(self.TF) + '_' + str(rsi)].shift(+1) < 100 - rsi_level) & (
+                self.df['close_tf' + str(self.TF)].shift(+1) < self.df['ema_tf' + str(self.TF) + '_20'].shift(+1)) & (
+                                         self.df['close_tf' + str(self.TF)].shift(+1) < self.df[
+                                     'ema_tf' + str(self.TF) + '_50'].shift(+1))
+
+        self.cons_eng_D['acc'] = (self.cons_eng_D['acc_prime'+ '_' + str(rsi)]) & (self.df['close_tf' + str(self.TF)] > self.df['high_tf' + str(self.TF)].shift(+1)) & (
+                self.df['rsi_tf' + str(self.TF) + '_' + str(rsi)] > 25)
+
         self.starting_index_eng_D = self.cons_eng_D['acc'][::-1].idxmax()
         self.eng_D3 = False
         if self.cons_eng_D['acc'].any():
             self.starting_index_eng_D = self.cons_eng_D['acc'][::-1].idxmax()
         else:
             self.starting_index_eng_D = None
-        if self.starting_index_eng_D is not None and self.starting_index_eng_D > len(df) - 8:
+        if self.starting_index_eng_D is not None and self.starting_index_eng_D > len(self.df) - 8:
             self.eng_D3 = True
-            for i in range(self.starting_index_eng_D, len(df)):
-                if df['close_tf' + str(self.TF)][i] < df['low_tf' + str(self.TF)][self.starting_index_eng_D] or \
-                        df['high_tf' + str(self.TF)][i] >= df['ema_tf' + str(self.TF) + '_20'][i]:
+            for i in range(self.starting_index_eng_D, len(self.df)):
+                if self.df['close_tf' + str(self.TF)][i] < self.df['low_tf' + str(self.TF)][self.starting_index_eng_D] or \
+                        self.df['high_tf' + str(self.TF)][i] >= self.df['ema_tf' + str(self.TF) + '_20'][i]:
                     self.eng_D3 = False
                     break
         ###############################
+
+
         if self.eng_l3:
             flesh3 = 'D'
         elif self.eng_D3:
@@ -585,6 +597,7 @@ class Eng(Datafeed):
         return flesh3
 
     def eng_con_2(self):
+        self.setdata()
         flesh1 = self.eng_con_1(3, 87)
         flesh1 += '_3'
         flesh2 = self.eng_con_1(14, 75)
@@ -602,6 +615,8 @@ class Eng(Datafeed):
             self.flesh = flesh1
         elif flesh2 == 'D_14':
             self.flesh = flesh2
+        elif (self.cons_eng_D['acc_prime' + '_' + str(3)].iloc[-1] and self.cons_eng_D['acc_prime' + '_' + str(14)].iloc[-1]) or (self.cons_eng['acc_prime' + '_' + str(3)].iloc[-1] and self.cons_eng['acc_prime' + '_' + str(14)].iloc[-1]) :
+            self.flesh = 'G'
         return self.flesh
 
 
@@ -783,6 +798,16 @@ class Manage(Conditions, Eng):
                             df_final['H4'] = list(map(self.update_map_H4, self.currencys))
                             df_final_eng['H4'] = list(map(self.update_map_H4_eng, self.currencys))
                             updated.append('H4 Updated')
+            for i in mini:
+                for j in range(len(d) - 1):
+                    if (d[i][j] == 'O' or d[i][j] == 'Oj') and (
+                            d_eng[mini[mini.index(i) + 1]][j] == 'D' or d_eng[mini[mini.index(i) + 1]][j] == 'D_3' or
+                            d_eng[mini[mini.index(i) + 1]][j] == 'D_14'):
+                        d[i][j] = 'X'
+                    if (d[i][j] == 'Or' or d[i][j] == 'Ojr') and (
+                            d_eng[mini[mini.index(i) + 1]][j] == 'U' or d_eng[mini[mini.index(i) + 1]][j] == 'U_3' or
+                            d_eng[mini[mini.index(i) + 1]][j] == 'U_14'):
+                        d[i][j] = 'Xr'
             self.to_db(df_final, df_final_eng)
             print(updated)
             print(df_final)
@@ -1030,9 +1055,9 @@ d_eng = t.toshow_eng()
 mini = ['M2', 'M5', 'M15', 'H1', 'H4', 'D1']
 for i in mini:
     for j in range(len(d)-1):
-        if d[i][j] == 'O' and d[mini[mini.index(i)+1]][j] == 'D':
+        if (d[i][j] == 'O' or d[i][j] == 'Oj') and (d_eng[mini[mini.index(i)+1]][j] == 'D' or d_eng[mini[mini.index(i)+1]][j] == 'D_3' or d_eng[mini[mini.index(i)+1]][j] == 'D_14'):
            d[i][j] = 'X'
-        if d[i][j] == 'Or' and d[mini[mini.index(i)+1]][j] == 'U':
+        if (d[i][j] == 'Or' or d[i][j] == 'Ojr') and (d_eng[mini[mini.index(i)+1]][j] == 'U' or d_eng[mini[mini.index(i)+1]][j] == 'U_3' or d_eng[mini[mini.index(i)+1]][j] == 'U_14'):
            d[i][j] = 'Xr'
 
 
@@ -1042,3 +1067,4 @@ print(d)
 print(d_eng)
 while True:
     t.update(d, d_eng)
+

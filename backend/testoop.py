@@ -7,7 +7,7 @@ t.Traitement()
 t.cons
 
 
-t = Eng('WTI', mt5.TIMEFRAME_H4)
+t = Eng('US100Cash', mt5.TIMEFRAME_H1)
 
 
 t.eng_con_2()

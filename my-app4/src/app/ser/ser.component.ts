@@ -1,6 +1,6 @@
 
 import { Component, Input, VERSION ,OnInit} from '@angular/core';
-import { MockServerService } from './ser.service';
+import { MockServerService  } from './ser.service';
 import { Stock } from './ser.service';
 import {
   ColDef,
@@ -37,6 +37,8 @@ export class SerComponent implements OnInit {
 
   constructor(private mockServerService: MockServerService) {
 
+    this.mockServerService.getDataObservable();
+
     this.defaultColDef = {
       flex: 1,
       minWidth: 100,
@@ -54,7 +56,7 @@ export class SerComponent implements OnInit {
     }
 
   ngOnInit(): void {
-
+    this.mockServerService.getDataObservable();
   console.log(this.rowData$);
 
 
